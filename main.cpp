@@ -27,24 +27,46 @@ int main() {
         if (start[0] == 'y') {printf("start"); menu = false;} if (start[0] == 'n') {printf("quit"); menu = false; running = false;}
     }
     //generate the map for the game
-    //number code for tile types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
-    int iteration = 0;
-    array<array<int, 100>, 100> map{};
-    uniform_int_distribution<int> dist0_99(0, 99);
+    //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
+    //number code for maze generation tile types: 0 = empty, 1 = generated
+    constexpr int size = 15;
+    array<array<int, size>, size> tile_map{};
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            tile_map[i][j] = 0;
+        }
+    }
+
+    int number_of_tiles = 15 * 15;
+    uniform_int_distribution<int> dist0_15(0, 15);
 
     //generate x and y for the exit
-    int exitX = dist0_99(gen);
-    int exitY = dist0_99(gen);
-    map[exitX][exitY] = 2;
+    int exitX = dist0_15(gen);
+    int exitY = dist0_15(gen);
+    tile_map[exitX][exitY] = 2;
+
+    //list of visited tiles
+    //visited[0][0] returns the x coordinate of the zeroeth tile visited
+    vector<array<int, 2>> visited;
+    visited[0] = {exitX, exitY};
+
+    //vector to store the data about adjacent tiles
+    vector<array<int, 2>> available;
 
     //generate a maze
-    while (visited < number_of_tiles)
+    while (size(visited) <= number_of_tiles)
     {
         //start at previous location (exit for first iteration)
         //pick an adjacent tile that hasn't been visited
         //if there isn't an unvisited tile adjacent, move backwards through stack by 1 entry
         //move in that direction, set previous tile to direction traveled to reach current tile
         //add tile coordinates to stack
+        
+        //check adjacent squares
+
+
     }
 
     //transform the tiles into map coordinates
