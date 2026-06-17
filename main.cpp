@@ -29,7 +29,7 @@ int main() {
     //generate the map for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
     //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left. If not 0, then not empty.
-    constexpr int mapSize = 15;
+    constexpr int mapSize = 3;
     array<array<int, mapSize>, mapSize> tile_map{};
     for (int i = 0; i < mapSize; i++)
     {
@@ -39,8 +39,8 @@ int main() {
         }
     }
 
-    int number_of_tiles = 15 * 15;
-    uniform_int_distribution<int> dist0_15(0, 15);
+    int number_of_tiles = 3 * 3;
+    uniform_int_distribution<int> dist0_14(0, 14);
     /*
     //generate x and y for the exit
     int exitX = dist0_15(gen);
@@ -63,6 +63,9 @@ int main() {
     //new position components
     int new_x = 0;
     int new_y = 0;
+
+    int debug = tile_map[current_x + 1][current_y];
+    cout << "\n" << debug;
 
     //generate a maze
     //less than since condition will be true for the last iteration where size(stack) becomes = number_of_tiles during the iteration, thus completing the tile map
@@ -102,15 +105,20 @@ int main() {
             {
                 available.push_back({current_x - 1, current_y});
             }
-        } else
+        } else if (size(available) == 0) //prevents the condition from executing if there are any coordinates in available, which prevents a zero element vector from being accessed later on
         {
             //set the available vector to empty if no cardinally adjacent tiles are available
             available.clear();
+        } else
+        {
+            //printf("Maze generation failed! Location with no available tiles reached");
         }
 
         if (size(available) == 0)
         {
             //move backwards in the stack of visited tiles by one if the available vector is empty
+            //having an error where the code is defaulting to executing the stack move back command on the first iteration even when the stack is empty
+            //one likely explanation is that the code is not properly determining whether there are cardinally adjacent free tiles available
             stackPos -= 1;
             current_x = stack[stackPos][0];
             current_y = stack[stackPos][1];
