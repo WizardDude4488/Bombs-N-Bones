@@ -12,11 +12,12 @@ string start;
 random_device rd;
 mt19937 gen(rd());
 
+/*
 void generate_map()
 {
 
 }
-
+*/
 
 
 int main() {
@@ -149,6 +150,16 @@ int main() {
         //clear available vector before use in next iteration
         available.clear();
 
+    }
+
+    //loops to print the tile map when finished
+    for (int x; x < mapSize; x++)
+    {
+        for (int y; y < mapSize; y++)
+        {
+            cout << tile_map[x][y];
+        }
+        cout << "\n";
     }
 /*
     //transform the tiles into map coordinates
