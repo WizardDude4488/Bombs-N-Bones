@@ -140,6 +140,8 @@ int main() {
 
             //after direction is written to the tile map at current position, add current position to the stack and update current position
             stack.push_back({current_x, current_y});
+            //update stackPos to reflect new tile count
+            stackPos += 1;
 
             current_x = new_x;
             current_y = new_y;
