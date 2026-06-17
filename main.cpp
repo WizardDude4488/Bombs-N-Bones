@@ -30,7 +30,7 @@ int main() {
     //generate the map for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
     //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left. If not 0, then not empty.
-    constexpr int mapSize = 3;
+    constexpr int mapSize = 5;
     array<array<int, mapSize>, mapSize> tile_map{};
     for (int i = 0; i < mapSize; i++)
     {
@@ -40,7 +40,7 @@ int main() {
         }
     }
 
-    int number_of_tiles = 3 * 3;
+    int number_of_tiles = 5 * 5;
     uniform_int_distribution<int> dist0_14(0, 14);
     /*
     //generate x and y for the exit
@@ -54,6 +54,7 @@ int main() {
     //stack and available choice
     int stackPos = 0;
     vector<array<int, 2>> stack;
+    stack.push_back({0,0});
     int indice = 0;
 
     //current position components
@@ -139,8 +140,9 @@ int main() {
             if (new_y - current_y > 0) tile_map[current_x][current_y] = 3; //down
             if (new_y - current_y < 0) tile_map[current_x][current_y] = 1; //up
 
-            //after direction is written to the tile map at current position, add current position to the stack and update current position
-            stack.push_back({current_x, current_y});
+            //after direction is written to the tile map, add new coordinates to the stack
+            //there was an issue with the map being generated half empty that I think was caused by the "current" coordinates being added to the stack
+            stack.push_back({new_x, new_y});
             //update stackPos to reflect new tile count
             stackPos += 1;
 
@@ -153,11 +155,27 @@ int main() {
     }
 
     //loops to print the tile map when finished
-    for (int x; x < mapSize; x++)
+    cout << "\n";
+    for (int y = 0; y < mapSize; y++)
     {
-        for (int y; y < mapSize; y++)
+        for (int x = 0; x < mapSize; x++)
         {
-            cout << tile_map[x][y];
+            /* switch (tile_map[x][y])
+            {
+            case 0:
+                cout << "start" << " ";
+            case 1:
+                cout << "up" << " ";
+            case 2:
+                cout << "right" << " ";
+            case 3:
+                cout << "down" << " ";
+            case 4:
+                cout << "left" << " ";
+            } */
+
+            cout << tile_map[x][y] << " ";
+
         }
         cout << "\n";
     }
