@@ -68,9 +68,13 @@ int main() {
     int debug = tile_map[current_x + 1][current_y];
     cout << "\n" << debug;
 
+    //boolean for jumping to the front of the stack
+    bool jump_stack = false;
+
     //generate a maze
     //less than since condition will be true for the last iteration where size(stack) becomes = number_of_tiles during the iteration, thus completing the tile map
-    while (size(stack) < number_of_tiles)
+    int generated = 0;
+    while (generated < number_of_tiles)
     {
         //pick an adjacent tile that hasn't been visited
         //if there isn't an unvisited tile adjacent, move backwards through stack by 1 entry
@@ -125,6 +129,7 @@ int main() {
             stackPos -= 1;
             current_x = stack[stackPos][0];
             current_y = stack[stackPos][1];
+            jump_stack = true;
         } else if (size(available) != 0)
         {
             //create a new random number distribution based on the size of the available vector
@@ -143,11 +148,24 @@ int main() {
             //after direction is written to the tile map, add new coordinates to the stack
             //there was an issue with the map being generated half empty that I think was caused by the "current" coordinates being added to the stack
             stack.push_back({new_x, new_y});
+
             //update stackPos to reflect new tile count
-            stackPos += 1;
+            if (jump_stack)
+            {
+                stackPos = size(stack) - 1;
+            } else
+            {
+                stackPos += 1;
+            }
+
+            //reset if a new tile is generated
+            jump_stack = false;
 
             current_x = new_x;
             current_y = new_y;
+
+            //increment number of generated tiles
+            generated += 1;
         }
         //clear available vector before use in next iteration
         available.clear();
