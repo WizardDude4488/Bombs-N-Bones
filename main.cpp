@@ -53,7 +53,6 @@ int main() {
     //stack and available choice
     int stackPos = 0;
     vector<array<int, 2>> stack;
-    stack.push_back({0,0});
     int indice = 0;
 
     //current position components
@@ -89,6 +88,7 @@ int main() {
         {
             if (tile_map[current_x + 1][current_y] == 0)
             {
+                printf("\n1 right available");
                 available.push_back({current_x + 1, current_y});
             }
         }
@@ -96,6 +96,7 @@ int main() {
         {
             if (tile_map[current_x][current_y + 1] == 0)
             {
+                printf("\n1 down available");
                 available.push_back({current_x, current_y + 1});
             }
         }
