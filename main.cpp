@@ -30,7 +30,7 @@ int main() {
     //generate the map for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
     //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left. If not 0, then not empty.
-    constexpr int mapSize = 5;
+    constexpr int mapSize = 15;
     array<array<int, mapSize>, mapSize> tile_map{};
     for (int i = 0; i < mapSize; i++)
     {
@@ -40,7 +40,7 @@ int main() {
         }
     }
 
-    int number_of_tiles = 5 * 5;
+    int number_of_tiles = mapSize * mapSize;
     uniform_int_distribution<int> dist0_14(0, 14);
     /*
     //generate x and y for the exit
@@ -68,12 +68,11 @@ int main() {
     int debug = tile_map[current_x + 1][current_y];
     cout << "\n" << debug;
 
-    //boolean for jumping to the front of the stack
-    bool jump_stack = false;
-
     //generate a maze
     //less than since condition will be true for the last iteration where size(stack) becomes = number_of_tiles during the iteration, thus completing the tile map
     int generated = 0;
+
+    //-1 since the last remaining zero tile should be the entrance to the maze
     while (generated < number_of_tiles)
     {
         //pick an adjacent tile that hasn't been visited
@@ -94,7 +93,6 @@ int main() {
         {
             if (tile_map[current_x + 1][current_y] == 0)
             {
-                printf("\n1 right available");
                 available.push_back({current_x + 1, current_y});
             }
         }
@@ -102,23 +100,15 @@ int main() {
         {
             if (tile_map[current_x][current_y + 1] == 0)
             {
-                printf("\n1 down available");
                 available.push_back({current_x, current_y + 1});
             }
         }
         if (current_x - 1 >= 0)
         {
-            if (tile_map[current_x - 1][current_y] == 0)
+             if (tile_map[current_x - 1][current_y] == 0)
             {
                 available.push_back({current_x - 1, current_y});
             }
-        } else if (size(available) == 0) //prevents the condition from executing if there are any coordinates in available, which prevents a zero element vector from being accessed later on
-        {
-            //set the available vector to empty if no cardinally adjacent tiles are available
-            available.clear();
-        } else
-        {
-            //printf("Maze generation failed! Location with no available tiles reached");
         }
 
         if (size(available) == 0)
@@ -126,10 +116,14 @@ int main() {
             //move backwards in the stack of visited tiles by one if the available vector is empty
             //having an error where the code is defaulting to executing the stack move back command on the first iteration even when the stack is empty
             //one likely explanation is that the code is not properly determining whether there are cardinally adjacent free tiles available
+
+            //dead-end at current position if no cardinally adjacent tiles available
+            //only set equal to five if current position has a value of zero, prevents overwriting previous movements at tiles
+            if (tile_map[current_x][current_y] == 0) tile_map[current_x][current_y] = 5;
+
             stackPos -= 1;
             current_x = stack[stackPos][0];
             current_y = stack[stackPos][1];
-            jump_stack = true;
         } else if (size(available) != 0)
         {
             //create a new random number distribution based on the size of the available vector
@@ -150,27 +144,32 @@ int main() {
             stack.push_back({new_x, new_y});
 
             //update stackPos to reflect new tile count
-            if (jump_stack)
-            {
-                stackPos = size(stack) - 1;
-            } else
-            {
-                stackPos += 1;
-            }
-
-            //reset if a new tile is generated
-            jump_stack = false;
+            stackPos = size(stack) - 1;
 
             current_x = new_x;
             current_y = new_y;
 
-            //increment number of generated tiles
-            generated += 1;
         }
+        //checks how many tiles are generated after each loop
+        //plus 1 since (0, 0) or first coordinate is added immediately after initialization
+        generated = 0;
+        for (int x = 0; x < mapSize; x++)
+        {
+            for (int y = 0; y< mapSize; y++)
+            {
+                if (tile_map[x][y] != 0)
+                {
+                    generated += 1;
+                }
+            }
+        }
+
         //clear available vector before use in next iteration
         available.clear();
-
+    cout << "\n" << generated;
     }
+
+    cout << "\n" << generated;
 
     //loops to print the tile map when finished
     cout << "\n";
@@ -192,7 +191,7 @@ int main() {
                 cout << "left" << " ";
             } */
 
-            cout << tile_map[x][y] << " ";
+            cout << tile_map[x][y] << "  ";
 
         }
         cout << "\n";
@@ -222,6 +221,5 @@ int main() {
         if map[]
         money += 1;
     } */
-
     return 0;
 };
