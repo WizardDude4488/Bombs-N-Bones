@@ -12,25 +12,13 @@ string start;
 random_device rd;
 mt19937 gen(rd());
 
-/*
-void generate_map()
+
+vector<vector<int>> generate_map()
 {
-
-}
-*/
-
-
-int main() {
-    //menu to start game
-    while (menu)
-    {
-        cout << "Welcome to Bombs N' Bones!\nThis is a simple text-based dungeon crawler\nWould you like to play?\n(y/n)"; cin >> start;
-        if (start[0] == 'y') {printf("start"); menu = false;} if (start[0] == 'n') {printf("quit"); menu = false; running = false;}
-    }
-    //generate the map for the game
+//generate the map for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
-    //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left. If not 0, then not empty.
-    constexpr int mapSize = 15;
+    //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end. If not 0, then not empty.
+    constexpr int mapSize = 10;
     array<array<int, mapSize>, mapSize> tile_map{};
     for (int i = 0; i < mapSize; i++)
     {
@@ -55,6 +43,7 @@ int main() {
     int stackPos = 0;
     vector<array<int, 2>> stack;
     stack.push_back({0,0});
+
     int indice = 0;
 
     //current position components
@@ -79,7 +68,7 @@ int main() {
         //if there isn't an unvisited tile adjacent, move backwards through stack by 1 entry
         //move in that direction, set previous tile to direction traveled to reach current tile
         //add tile coordinates to stack
-        
+
         //check if the four cardinal directions are possible
         //check the possible cardinally adjacent tiles are empty
         if (current_y - 1 >= 0)
@@ -177,25 +166,61 @@ int main() {
     {
         for (int x = 0; x < mapSize; x++)
         {
-            /* switch (tile_map[x][y])
+            int value = tile_map.at(x).at(y);
+            if (value == 0)
             {
-            case 0:
-                cout << "start" << " ";
-            case 1:
-                cout << "up" << " ";
-            case 2:
-                cout << "right" << " ";
-            case 3:
-                cout << "down" << " ";
-            case 4:
-                cout << "left" << " ";
-            } */
+                cout << "s" << "  ";
+            } else if (value == 1)
+            {
+                cout << "^" << "  ";
+            } else if (value == 2)
+            {
+                cout << ">" << "  ";
+            } else if (value == 3)
+            {
+                cout << "v" << "  ";
+            } else if (value == 4)
+            {
+                cout << "<" << "  ";
+            } else if (value == 5)
+            {
+                cout << "e" << "  ";
+            } else if (value == 6)
+            {
+                cout << "!" << "  ";
+            }
 
-            cout << tile_map[x][y] << "  ";
-
+            //cout << tile_map[x][y] << "  ";
         }
         cout << "\n";
     }
+
+    //for loops to create return vector so maze can be used elsewhere
+    vector<int> y_values;
+    vector<vector<int>> generated_maze;
+    for (int x = 0; x < mapSize; x++)
+    {
+        for (int y = 0; y < mapSize; y++)
+        {
+
+        }
+    }
+
+    return
+}
+
+
+
+int main() {
+    //menu to start game
+    while (menu)
+    {
+        cout << "Welcome to Bombs N' Bones!\nThis is a simple text-based dungeon crawler\nWould you like to play?\n(y/n)"; cin >> start;
+        if (start[0] == 'y') {printf("start"); menu = false;} if (start[0] == 'n') {printf("quit"); menu = false; running = false;}
+    }
+
+    generate_map();
+
 /*
     //transform the tiles into map coordinates
     while (generated < tiles)
