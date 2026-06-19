@@ -1,11 +1,13 @@
 #include "map.h"
 
 //constructor
-map::map()
-= default;
+MapGen::MapGen()
+{
+    mapLookupTable[{6, 0}] = 1;
+}
 
 //method to set probabilities
-void map::set_probabilities(int skeletons, int bombs, int money)
+void MapGen::set_probabilities(int skeletons, int bombs, int money)
 {
     skeleton_probability = skeletons;
     bomb_probability = bombs;
@@ -13,7 +15,7 @@ void map::set_probabilities(int skeletons, int bombs, int money)
 }
 
 //method to generate map
-void map::generate_map(vector<vector<int>> maze)
+void MapGen::generate_map(vector<vector<int>> maze)
 {
     //change x value in outer for loop
     //change y value in inner for loop
@@ -23,19 +25,28 @@ void map::generate_map(vector<vector<int>> maze)
     {
         for (int maze_y = 0; maze_y < size(maze); maze_y++)
         {
-            //ensures values are zero by default
-            vector<vector<int>> map_tile{{0,0,0}, {0,0,0}, {0,0,0}};
+            //default map square
+            vector<vector<int>> map_tile{{1,1,1}, {1,0,1}, {1,1,1}};
             int tile_x = 0;
             int tile_y = 0;
             //blah
             //controls map square cardinal left from center
+            if (maze.at(maze_x).at(maze_y) == 6)
+            {
+                //set to three by three of 1s
+                map_tile.at(1).at(1) = 1;
+
+            } else
+            {
+                //do lookup table
+            }
 
 
         }
     }
 }
 
-vector<vector<int>> map::return_map()
+vector<vector<int>> MapGen::return_map()
 {
     if (size(finished_map) != 0)
     {
