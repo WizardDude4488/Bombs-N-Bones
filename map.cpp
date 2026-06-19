@@ -27,14 +27,14 @@ void map::generate_map(vector<vector<int>> maze)
             vector<vector<int>> map_tile{{0,0,0}, {0,0,0}, {0,0,0}};
             int tile_x = 0;
             int tile_y = 0;
-
+            //blah
             //controls map square cardinal left from center
             if (maze_x > 0)
             {
                 switch (maze.at(maze_x).at(maze_y))
                 {
                 case 1:
-                     
+
                 default:
                     printf("Error!");
                 }
