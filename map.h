@@ -20,7 +20,7 @@ public:
     //1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end, 6 = boundary
     //1st int is number of current tile type, 2nd int is number of adjacent tile type, output value is int since will be either zero or 1
     //values implemented in .cpp file
-    std::map<std::tuple<int, int>, int> mapLookupTable;
+    std::map<std::tuple<int, int, int>, int> mapLookupTable;
 
     //constructor
     MapGen();

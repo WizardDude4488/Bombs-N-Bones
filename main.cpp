@@ -20,7 +20,7 @@ vector<vector<int>> generate_maze()
 {
 //generate the maze for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
-    //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end. If not 0, then not empty.
+    //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end, 6 = boundary. If not 0, then not empty.
     constexpr int mazeSizeInt = 4; //"mazeSizeInt" internal maze size
     constexpr int mazeSizeExt = mazeSizeInt + 2; //external is internal plus one boundary tile on each side for both dimensions, so plus two
     array<array<int, mazeSizeExt>, mazeSizeExt> tile_maze{};
