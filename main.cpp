@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <array>
@@ -11,7 +13,6 @@ string start;
 //creating random number generator
 random_device rd;
 mt19937 gen(rd());
-
 
 vector<vector<int>> generate_maze()
 {
