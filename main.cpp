@@ -13,7 +13,7 @@ random_device rd;
 mt19937 gen(rd());
 
 
-vector<vector<int>> generate_map()
+vector<vector<int>> generate_maze()
 {
 //generate the map for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
@@ -202,11 +202,12 @@ vector<vector<int>> generate_map()
     {
         for (int y = 0; y < mapSize; y++)
         {
-
+            y_values.push_back(tile_map.at(x).at(y));
         }
+        generated_maze.push_back(y_values);
     }
 
-    return
+    return generated_maze;
 }
 
 
@@ -219,7 +220,10 @@ int main() {
         if (start[0] == 'y') {printf("start"); menu = false;} if (start[0] == 'n') {printf("quit"); menu = false; running = false;}
     }
 
-    generate_map();
+    vector<vector<int>> maze = generate_maze();
+
+    //generate_map(maze) returns vector of generated map with all starting locations for different game objects
+    //probably should implement this with a class and methods so it's more flexible
 
 /*
     //transform the tiles into map coordinates
