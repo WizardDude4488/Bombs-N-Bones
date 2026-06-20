@@ -1,10 +1,11 @@
 #pragma once
 
-#include <iostream>
-#include <string>
 #include <array>
-#include <random>
+#include <iostream>
 #include <map>
+#include "MapGen.h"
+#include <random>
+#include <string>
 #include <tuple>
 using namespace std;
 
@@ -212,7 +213,8 @@ vector<vector<int>> generate_maze()
     return generated_maze;
 }
 
-
+//create a MapGen object
+MapGen mapgenerator;
 
 int main() {
     //menu to start game
@@ -223,6 +225,20 @@ int main() {
     }
 
     vector<vector<int>> maze = generate_maze();
+    printf("\n\n");
+    mapgenerator.generate_map(maze);
+    vector<vector<int>> finishedMap = mapgenerator.return_map();
+
+    for (int y = 0; y < size(finishedMap); y++)
+    {
+        for (int x = 0; x < size(finishedMap); x++)
+        {
+            int value = finishedMap.at(x).at(y);
+            cout << value << "  ";
+        }
+        cout << "\n";
+    }
+
 
     //generate_map(maze) returns vector of generated map with all starting locations for different game objects
     //probably should implement this with a class and methods so it's more flexible
