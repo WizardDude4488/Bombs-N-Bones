@@ -179,7 +179,7 @@ void MapGen::generate_map(vector<vector<int>> maze)
     //if an adjacent tile type is in bounds, compare it with the current tile type to determine what the (up/right/down/left) square in tile should be
 
     //generates a new key for searching the lookup table
-    auto key = make_tuple(0,0, 0);
+    auto key = make_tuple(0,0,0);
     //default value for iterator, commonly named "it" in C++
     auto it = mapLookupTable.find(key);
 
@@ -203,17 +203,29 @@ void MapGen::generate_map(vector<vector<int>> maze)
             }
             //code: (current tile value, adjacent tile value, adjacent tile direction
             //up
-            key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x).at(maze_y - 1), 1);
-            map_tile[1][0] = it->second;
+            if (maze_y > 0)
+            {
+                key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x).at(maze_y - 1), 1);
+                map_tile[1][0] = it->second;
+            }
             //right
-            key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x + 1).at(maze_y), 2);
-            map_tile[2][1] = it->second;
+            if (maze_x < size(maze))
+            {
+                key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x + 1).at(maze_y), 2);
+                map_tile[2][1] = it->second;
+            }
             //down
-            key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x).at(maze_y + 1), 3);
-            map_tile[1][2] = it->second;
+            if (maze_y < size(maze))
+            {
+                key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x).at(maze_y + 1), 3);
+                map_tile[1][2] = it->second;
+            }
             //left
-            key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x - 1).at(maze_y), 4);
-            map_tile[0][1] = it->second;
+            if (maze_x > 0)
+            {
+                key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x - 1).at(maze_y), 4);
+                map_tile[0][1] = it->second;
+            }
 
             //pastes each finished tile onto the final map
             for (int map_x = 0; map_x < size(map_tile); map_x++)

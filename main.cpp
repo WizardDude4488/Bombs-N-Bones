@@ -208,6 +208,8 @@ vector<vector<int>> generate_maze()
             y_values.push_back(tile_maze.at(x).at(y));
         }
         generated_maze.push_back(y_values);
+        //clear before using again
+        y_values.clear();
     }
 
     return generated_maze;
