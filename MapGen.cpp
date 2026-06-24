@@ -6,7 +6,7 @@ MapGen::MapGen()
     //1st int is number of current tile, 2nd int is number of adjacent tile, 3rd int is integer code for direction adjacent tile is from current tile
     //valid numbers for current tiles are 1-5 (inclusive) (1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end, 6 = boundary)
     //rule is that any time a tile points directly into another, except for boundary tiles, it leaves a blank at the relevant spaces, allowing the maze to be preserved
-    //0 shouldn't happen
+    //default here for key initialization
     mapLookupTable[{0,0,0}] = 0;
     //for adjacent tile == 6
     mapLookupTable[{1,6,1}] = 1;
@@ -65,13 +65,13 @@ MapGen::MapGen()
     mapLookupTable[{4,4,1}] = 1;
     mapLookupTable[{5,4,1}] = 1;
     mapLookupTable[{6,4,1}] = 1;
-    mapLookupTable[{1,4,2}] = 1;
+    mapLookupTable[{1,4,2}] = 0;
     mapLookupTable[{2,4,2}] = 0;
     mapLookupTable[{3,4,2}] = 0;
     mapLookupTable[{4,4,2}] = 0;
     mapLookupTable[{5,4,2}] = 0;
     mapLookupTable[{6,4,2}] = 1;
-    mapLookupTable[{1,4,3}] = 1;
+    mapLookupTable[{1,4,3}] = 0;
     mapLookupTable[{2,4,3}] = 1;
     mapLookupTable[{3,4,3}] = 0;
     mapLookupTable[{4,4,3}] = 1;
@@ -96,10 +96,10 @@ MapGen::MapGen()
     mapLookupTable[{4,3,2}] = 1;
     mapLookupTable[{5,3,2}] = 1;
     mapLookupTable[{6,3,2}] = 1;
-    mapLookupTable[{1,3,3}] = 1;
+    mapLookupTable[{1,3,3}] = 0;
     mapLookupTable[{2,3,3}] = 1;
     mapLookupTable[{3,3,3}] = 0;
-    mapLookupTable[{4,3,3}] = 1;
+    mapLookupTable[{4,3,3}] = 0;
     mapLookupTable[{5,3,3}] = 1;
     mapLookupTable[{6,3,3}] = 1;
     mapLookupTable[{1,3,4}] = 1;
@@ -129,21 +129,21 @@ MapGen::MapGen()
     mapLookupTable[{6,2,3}] = 1;
     mapLookupTable[{1,2,4}] = 0;
     mapLookupTable[{2,2,4}] = 0;
-    mapLookupTable[{3,2,4}] = 1;
+    mapLookupTable[{3,2,4}] = 0;
     mapLookupTable[{4,2,4}] = 1;
     mapLookupTable[{5,2,4}] = 0;
     mapLookupTable[{6,2,4}] = 1;
     //for adjacent tile == 1
     mapLookupTable[{1,1,1}] = 0;
     mapLookupTable[{2,1,1}] = 1;
-    mapLookupTable[{3,1,1}] = 1;
+    mapLookupTable[{3,1,1}] = 0;
     mapLookupTable[{4,1,1}] = 1;
     mapLookupTable[{5,1,1}] = 1;
     mapLookupTable[{6,1,1}] = 1;
     mapLookupTable[{1,1,2}] = 1;
     mapLookupTable[{2,1,2}] = 0;
     mapLookupTable[{3,1,2}] = 1;
-    mapLookupTable[{4,1,2}] = 1;
+    mapLookupTable[{4,1,2}] = 0;
     mapLookupTable[{5,1,2}] = 1;
     mapLookupTable[{6,1,2}] = 1;
     mapLookupTable[{1,1,3}] = 0;
@@ -182,9 +182,18 @@ void MapGen::generate_map(vector<vector<int>> maze)
     auto key = make_tuple(0,0,0);
     //default value for iterator, commonly named "it" in C++
     auto it = mapLookupTable.find(key);
+    vector<int> y_values;
 
     //vector for finished map
-    vector<vector<int>> finishedMap;
+    for (int map_x = 0; map_x < 3*size(maze); map_x++)
+    {
+        for (int map_y = 0; map_y < 3*size(maze); map_y++)
+        {
+            y_values.push_back(0);
+        }
+        finished_map.push_back(y_values);
+        y_values.clear();
+    }
 
     for (int maze_x = 0; maze_x < size(maze); maze_x++)
     {
@@ -206,24 +215,28 @@ void MapGen::generate_map(vector<vector<int>> maze)
             if (maze_y > 0)
             {
                 key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x).at(maze_y - 1), 1);
+                it = mapLookupTable.find(key);
                 map_tile[1][0] = it->second;
             }
             //right
-            if (maze_x < size(maze))
+            if (maze_x < size(maze) - 1)
             {
                 key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x + 1).at(maze_y), 2);
+                it = mapLookupTable.find(key);
                 map_tile[2][1] = it->second;
             }
             //down
-            if (maze_y < size(maze))
+            if (maze_y < size(maze) - 1)
             {
                 key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x).at(maze_y + 1), 3);
+                it = mapLookupTable.find(key);
                 map_tile[1][2] = it->second;
             }
             //left
             if (maze_x > 0)
             {
                 key = make_tuple(maze.at(maze_x).at(maze_y), maze.at(maze_x - 1).at(maze_y), 4);
+                it = mapLookupTable.find(key);
                 map_tile[0][1] = it->second;
             }
 
@@ -233,7 +246,8 @@ void MapGen::generate_map(vector<vector<int>> maze)
                 for (int map_y = 0; map_y < size(map_tile); map_y++)
                 {
                     //add three times maze_x and 3 times maze_y to offset
-                    finishedMap.at(map_x + 3*maze_x).at(map_y + 3*maze_y) = map_tile[map_x][map_y];
+                    //runs into an exception when trying to access finishedMap at this location
+                    finished_map.at(map_x + 3*maze_x).at(map_y + 3*maze_y) = map_tile[map_x][map_y];
                 }
 
             }

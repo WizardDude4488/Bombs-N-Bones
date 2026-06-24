@@ -30,8 +30,8 @@ public:
     //make sure to create a new discrete distribution at the beginning of the method definition
     void generate_map(vector<vector<int>> maze);
     vector<vector<int>> return_map();
-private:
     //private and accessed by a function to ensure the map is not used elsewhere in the game before it is finished
+private:
     vector<vector<int>> finished_map;
 };
 

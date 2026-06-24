@@ -17,14 +17,14 @@ string start;
 random_device rd;
 mt19937 gen(rd());
 
-vector<vector<int>> generate_maze()
+vector<vector<int>> generate_maze(int mazeSizeInt)
 {
 //generate the maze for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
-    //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end, 6 = boundary. If not 0, then not empty.
-    constexpr int mazeSizeInt = 4; //"mazeSizeInt" internal maze size
-    constexpr int mazeSizeExt = mazeSizeInt + 2; //external is internal plus one boundary tile on each side for both dimensions, so plus two
-    array<array<int, mazeSizeExt>, mazeSizeExt> tile_maze{};
+    //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end, 6 = boundary. If not 0, then not empty.//"mazeSizeInt" internal maze size
+    int mazeSizeExt = mazeSizeInt + 2; //external is internal plus one boundary tile on each side for both dimensions, so plus two
+    vector<vector<int>> tile_maze{};
+    vector<int> tile_maze_y;
 
     for (int i = 0; i < mazeSizeExt; i++)
     {
@@ -34,13 +34,15 @@ vector<vector<int>> generate_maze()
             //plus one to far edges since zero indexed
             if (i == 0 or i + 1 == mazeSizeExt or j == 0 or j + 1 == mazeSizeExt)
             {
-                tile_maze[i][j] = 6;
+                tile_maze_y.push_back(6);
             } else
             {
                 //set to zero as normal if not at an edge
-                tile_maze[i][j] = 0;
+                tile_maze_y.push_back(0);
             }
         }
+        tile_maze.push_back(tile_maze_y);
+        tile_maze_y.clear();
     }
 
     //want to use mazeSizeInt (internal) since the maze won't generate at edges, only interior
@@ -226,7 +228,7 @@ int main() {
         if (start[0] == 'y') {printf("start"); menu = false;} if (start[0] == 'n') {printf("quit"); menu = false; running = false;}
     }
 
-    vector<vector<int>> maze = generate_maze();
+    vector<vector<int>> maze = generate_maze(4);
     printf("\n\n");
     mapgenerator.generate_map(maze);
     vector<vector<int>> finishedMap = mapgenerator.return_map();
@@ -236,7 +238,13 @@ int main() {
         for (int x = 0; x < size(finishedMap); x++)
         {
             int value = finishedMap.at(x).at(y);
-            cout << value << "  ";
+            if (value == 1)
+            {
+                cout << "1" << "  ";
+            } else
+            {
+                cout << "0" << "  ";
+            }
         }
         cout << "\n";
     }
