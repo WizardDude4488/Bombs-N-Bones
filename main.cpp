@@ -3,7 +3,6 @@
 #include <array>
 #include <iostream>
 #include <map>
-#include "MapGen.h"
 #include <random>
 #include <string>
 #include <tuple>
@@ -30,16 +29,7 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
     {
         for (int j = 0; j < mazeSizeExt; j++)
         {
-            //if position is at one of the edges, set value at position to 6
-            //plus one to far edges since zero indexed
-            if (i == 0 or i + 1 == mazeSizeExt or j == 0 or j + 1 == mazeSizeExt)
-            {
-                tile_maze_y.push_back(6);
-            } else
-            {
-                //set to zero as normal if not at an edge
-                tile_maze_y.push_back(0);
-            }
+            tile_maze_y.push_back(1);
         }
         tile_maze.push_back(tile_maze_y);
         tile_maze_y.clear();
@@ -77,9 +67,10 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
     //generate a maze
     //less than since condition will be true for the last iteration where size(stack) becomes = number_of_tiles during the iteration, thus completing the tile map
     int generated = 0;
+    vector<int> failed;
 
     //-1 since the last remaining zero tile should be the entrance to the maze
-    while (generated < number_of_tiles)
+    while (generated < floor(0.7 * number_of_tiles))
     {
         //pick an adjacent tile that hasn't been visited
         //if there isn't an unvisited tile adjacent, move backwards through stack by 1 entry
@@ -88,21 +79,49 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
 
         //check if the four cardinal directions are possible
         //check the possible cardinally adjacent tiles are empty
-        if (tile_maze[current_x][current_y - 1] == 0)
+        //up
+        if (current_y > 1)
         {
-          available.push_back({current_x, current_y - 1});
+          if (tile_maze[current_x][current_y - 1] == 1
+              and tile_maze[current_x][current_y - 2] == 1
+              and tile_maze[current_x - 1][current_y - 1] == 1
+              and tile_maze[current_x + 1][current_y - 1] == 1)
+          {
+              available.push_back({current_x, current_y - 1});
+          }
         }
-        if (tile_maze[current_x + 1][current_y] == 0)
+        //right
+        if (current_x < size(tile_maze) - 2)
         {
-            available.push_back({current_x + 1, current_y});
+            if (tile_maze[current_x + 1][current_y] == 1
+                and tile_maze[current_x + 2][current_y] == 1
+                and tile_maze[current_x + 1][current_y - 1] == 1
+                and tile_maze[current_x + 1][current_y + 1] == 1)
+            {
+                available.push_back({current_x + 1, current_y});
+            }
         }
-        if (tile_maze[current_x][current_y + 1] == 0)
+        //down
+        if (current_y < size(tile_maze) - 2)
         {
-            available.push_back({current_x, current_y + 1});
+            if (tile_maze[current_x][current_y + 1] == 1
+                and tile_maze[current_x][current_y + 2] == 1
+                and tile_maze[current_x - 1][current_y + 1] == 1
+                and tile_maze[current_x + 1][current_y + 1] == 1)
+            {
+                available.push_back({current_x, current_y + 1});
+            }
         }
-        if (tile_maze[current_x - 1][current_y] == 0)
+        //left
+        if (current_x > 1)
         {
-            available.push_back({current_x - 1, current_y});
+            if (tile_maze[current_x - 1][current_y] == 1
+                and tile_maze[current_x - 2][current_y] == 1
+                and tile_maze[current_x - 1][current_y - 1] == 1
+                and tile_maze[current_x - 1][current_y + 1] == 1)
+            {
+                available.push_back({current_x - 1, current_y});
+            }
         }
 
         if (size(available) == 0)
@@ -111,13 +130,10 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
             //having an error where the code is defaulting to executing the stack move back command on the first iteration even when the stack is empty
             //one likely explanation is that the code is not properly determining whether there are cardinally adjacent free tiles available
 
-            //dead-end at current position if no cardinally adjacent tiles available
-            //only set equal to five if current position has a value of zero, prevents overwriting previous movements at tiles
-            if (tile_maze[current_x][current_y] == 0) tile_maze[current_x][current_y] = 5;
-
             stackPos -= 1;
             current_x = stack[stackPos][0];
             current_y = stack[stackPos][1];
+            failed.push_back(1);
         } else if (size(available) != 0)
         {
             //create a new random number distribution based on the size of the available vector
@@ -127,11 +143,8 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
             new_x = available[indice][0];
             new_y = available[indice][1];
 
-            //set direction for current tile based on location of new tile
-            if (new_x - current_x > 0) tile_maze[current_x][current_y] = 2; //right
-            if (new_x - current_x < 0) tile_maze[current_x][current_y] = 4; //left
-            if (new_y - current_y > 0) tile_maze[current_x][current_y] = 3; //down
-            if (new_y - current_y < 0) tile_maze[current_x][current_y] = 1; //up
+            //set current tile equal to zero
+            tile_maze[current_x][current_y] = 0;
 
             //after direction is written to the tile map, add new coordinates to the stack
             //there was an issue with the map being generated half empty that I think was caused by the "current" coordinates being added to the stack
@@ -143,6 +156,8 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
             current_x = new_x;
             current_y = new_y;
 
+            //clear failed list
+            failed.clear();
         }
         //checks how many tiles are generated after each loop
         //plus 1 since (0, 0) or first coordinate is added immediately after initialization
@@ -151,7 +166,7 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
         {
             for (int y = 0; y < mazeSizeExt; y++)
             {
-                if (tile_maze[x][y] != 0)
+                if (tile_maze[x][y] == 0)
                 {
                     generated += 1;
                 }
@@ -160,6 +175,9 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
 
         //clear available vector before use in next iteration
         available.clear();
+        //if number of failed attempts gets bigger than stack, stop generation
+        if (size(failed) > generated) break;
+
     cout << "\n" << generated;
     }
 
@@ -174,28 +192,11 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
             int value = tile_maze.at(x).at(y);
             if (value == 0)
             {
-                cout << "s" << "  ";
+                cout << "0" << "  ";
             } else if (value == 1)
             {
-                cout << "^" << "  ";
-            } else if (value == 2)
-            {
-                cout << ">" << "  ";
-            } else if (value == 3)
-            {
-                cout << "v" << "  ";
-            } else if (value == 4)
-            {
-                cout << "<" << "  ";
-            } else if (value == 5)
-            {
-                cout << "e" << "  ";
-            } else if (value == 6)
-            {
-                cout << "#" << "  ";
+                cout << "1" << "  ";
             }
-
-            //cout << tile_map[x][y] << "  ";
         }
         cout << "\n";
     }
@@ -217,9 +218,6 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
     return generated_maze;
 }
 
-//create a MapGen object
-MapGen mapgenerator;
-
 int main() {
     //menu to start game
     while (menu)
@@ -228,26 +226,7 @@ int main() {
         if (start[0] == 'y') {printf("start"); menu = false;} if (start[0] == 'n') {printf("quit"); menu = false; running = false;}
     }
 
-    vector<vector<int>> maze = generate_maze(4);
-    printf("\n\n");
-    mapgenerator.generate_map(maze);
-    vector<vector<int>> finishedMap = mapgenerator.return_map();
-
-    for (int y = 0; y < size(finishedMap); y++)
-    {
-        for (int x = 0; x < size(finishedMap); x++)
-        {
-            int value = finishedMap.at(x).at(y);
-            if (value == 1)
-            {
-                cout << "1" << "  ";
-            } else
-            {
-                cout << "0" << "  ";
-            }
-        }
-        cout << "\n";
-    }
+    vector<vector<int>> maze = generate_maze(25);
 
 
     //generate_map(maze) returns vector of generated map with all starting locations for different game objects
