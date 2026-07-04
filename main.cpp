@@ -6,6 +6,7 @@
 #include <random>
 #include <string>
 #include <tuple>
+#include <algorithm>
 using namespace std;
 
 bool running = true;
@@ -57,20 +58,13 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
     int current_x = 1;
     int current_y = 1;
 
-    //new position components
-    int new_x = 1;
-    int new_y = 1;
-
-    int debug = tile_maze[current_x + 1][current_y];
-    cout << "\n" << debug;
-
     //generate a maze
     //less than since condition will be true for the last iteration where size(stack) becomes = number_of_tiles during the iteration, thus completing the tile map
     int generated = 0;
     vector<int> failed;
 
     //-1 since the last remaining zero tile should be the entrance to the maze
-    while (generated < floor(0.7 * number_of_tiles))
+    while (generated < floor(0.4 * number_of_tiles))
     {
         //pick an adjacent tile that hasn't been visited
         //if there isn't an unvisited tile adjacent, move backwards through stack by 1 entry
@@ -129,7 +123,7 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
             //move backwards in the stack of visited tiles by one if the available vector is empty
             //having an error where the code is defaulting to executing the stack move back command on the first iteration even when the stack is empty
             //one likely explanation is that the code is not properly determining whether there are cardinally adjacent free tiles available
-
+            if (stackPos < 1) break;
             stackPos -= 1;
             current_x = stack[stackPos][0];
             current_y = stack[stackPos][1];
@@ -140,21 +134,18 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
             uniform_int_distribution<int> distAvailable(0, size(available) - 1);
             indice = distAvailable(gen);
 
-            new_x = available[indice][0];
-            new_y = available[indice][1];
+            current_x = available[indice][0];
+            current_y = available[indice][1];
 
             //set current tile equal to zero
             tile_maze[current_x][current_y] = 0;
 
             //after direction is written to the tile map, add new coordinates to the stack
             //there was an issue with the map being generated half empty that I think was caused by the "current" coordinates being added to the stack
-            stack.push_back({new_x, new_y});
+            stack.push_back({current_x, current_y});
 
             //update stackPos to reflect new tile count
             stackPos = size(stack) - 1;
-
-            current_x = new_x;
-            current_y = new_y;
 
             //clear failed list
             failed.clear();
@@ -162,15 +153,10 @@ vector<vector<int>> generate_maze(int mazeSizeInt)
         //checks how many tiles are generated after each loop
         //plus 1 since (0, 0) or first coordinate is added immediately after initialization
         generated = 0;
+
         for (int x = 0; x < mazeSizeExt; x++)
         {
-            for (int y = 0; y < mazeSizeExt; y++)
-            {
-                if (tile_maze[x][y] == 0)
-                {
-                    generated += 1;
-                }
-            }
+            generated += ranges::count(tile_maze[x], 0);
         }
 
         //clear available vector before use in next iteration
@@ -226,7 +212,7 @@ int main() {
         if (start[0] == 'y') {printf("start"); menu = false;} if (start[0] == 'n') {printf("quit"); menu = false; running = false;}
     }
 
-    vector<vector<int>> maze = generate_maze(25);
+    vector<vector<int>> maze = generate_maze(10);
 
 
     //generate_map(maze) returns vector of generated map with all starting locations for different game objects
