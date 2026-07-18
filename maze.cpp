@@ -62,7 +62,7 @@ void maze::movePlayer(string direction)
 }
 
 vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
-//generate the maze for the game
+    //generate the maze for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
     //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end, 6 = boundary. If not 0, then not empty.//"mazeSizeInt" internal maze size
     int mazeSizeExt = mazeSizeInt + 2; //external is internal plus one boundary tile on each side for both dimensions, so plus two
@@ -81,12 +81,7 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
 
     //want to use mazeSizeInt (internal) since the maze won't generate at edges, only interior
     int number_of_tiles = mazeSizeExt * mazeSizeExt;
-    /*
-    //generate x and y for the exit
-    int exitX = dist0_15(gen);
-    int exitY = dist0_15(gen);
-    tile_[exitX][exitY] = 2;
-    */
+
     //vector to store the data about adjacent tiles
     vector<array<int, 2>> available;
 
@@ -119,13 +114,13 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
         //up
         if (current_y > 1)
         {
-          if (tile_maze[current_x][current_y - 1] == 1
-              && tile_maze[current_x][current_y - 2] == 1
-              && tile_maze[current_x - 1][current_y - 1] == 1
-              && tile_maze[current_x + 1][current_y - 1] == 1)
-          {
-              available.push_back({current_x, current_y - 1});
-          }
+            if (tile_maze[current_x][current_y - 1] == 1
+                && tile_maze[current_x][current_y - 2] == 1
+                && tile_maze[current_x - 1][current_y - 1] == 1
+                && tile_maze[current_x + 1][current_y - 1] == 1)
+            {
+                available.push_back({current_x, current_y - 1});
+            }
         }
         //right
         if (current_x < size(tile_maze) - 2)
@@ -207,10 +202,39 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
         //if number of failed attempts gets bigger than stack, stop generation
         if (size(failed) > generated) break;
 
-    cout << "\n" << generated;
+        cout << "\n" << generated;
     }
 
     cout << "\n" << generated;
+
+    //create a list of available (walkable) tiles for generating the exit, money, skeletons and bombs
+    vector<vector<int>> walkable;
+
+    for (int x = 0; x < mazeSizeExt; x++) {
+        for (int y = 0; y < mazeSizeExt; y++) {
+            if (tile_maze[x][y] == 0) {
+                walkable.push_back({x, y});
+            }
+        }
+    }
+
+    //generate x and y for the exit
+    uniform_int_distribution<> exitDistWalkable(1, size(walkable));
+    int exit = exitDistWalkable(gen);
+
+    int exitX = walkable.at(exit).at(0);
+    int exitY = walkable.at(exit).at(1);
+    generated_maze.at(exitX).at(exitY) = 2;
+
+    //remove the point where the exit was generated
+    walkable.erase(walkable.begin() + exit);
+
+    //generate money locations
+    for (int positions = 0; positions < 0.1 * size(walkable); positions++) {
+        uniform_int_distribution<> moneyDistWalkable(1, size(walkable));
+        int listPos = moneyDistWalkable(gen);
+        walkable.erase(walkable.begin() + listPos);
+    }
 
     //loops to print the tile map when finished
     cout << "\n";
