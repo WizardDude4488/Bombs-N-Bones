@@ -12,7 +12,7 @@ using namespace std;
 
 bool playing = true;
 bool menu = true;
-bool leaveMaze = true;
+bool leaveMaze = false;
 string start;
 
 maze Maze;
@@ -34,11 +34,18 @@ int main() {
         //hud (3*3 grid, instructions for actions, place to enter letter for action)
         //printf(hud);
         //update positions and quantities
+        Maze.newHud();
+        string movementDir;
+        cout << "\n";
+        cin >> movementDir;
 
+        Maze.movePlayer(movementDir);
         //end game once exit reached
         if (leaveMaze)
         {
             playing = false;
+        } else {
+            continue;
         }
     }
 

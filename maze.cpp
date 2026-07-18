@@ -16,7 +16,50 @@ maze::maze() {}
 
 void maze::newHud()
 {
+    //hud (3*3 grid, instructions for actions, place to enter letter for action)
+    //printf(hud);
+    //update positions and quantities
+    cout << generated_maze[player_x - 1][player_y - 1] << "  "
+    << generated_maze[player_x][player_y - 1] << "  "
+    << generated_maze[player_x + 1][player_y - 1] << "     Enter one command at a time." << "\n"
+    << generated_maze[player_x - 1][player_y] << "  "
+    << generated_maze[player_x][player_y] << "  "
+    << generated_maze[player_x + 1][player_y] << "     Use wasd to move, e to pickup, and q to attack." "\n"
+    << generated_maze[player_x - 1][player_y + 1] << "  "
+    << generated_maze[player_x][player_y + 1] << "  "
+    << generated_maze[player_x + 1][player_y + 1];
 };
+
+void maze::movePlayer(string direction)
+{
+       if (direction == "a") {
+           if (generated_maze[player_x - 1][player_y] != 1) {
+               player_x -= 1;
+           } else {
+               cout << "\n" << "You can't move there! Try doing something else." << "\n";
+           }
+       } else if (direction == "w") {
+           if (generated_maze[player_x][player_y - 1] != 1) {
+               player_y -= 1;
+           } else {
+               cout << "\n" << "You can't move there! Try doing something else." << "\n";
+           }
+       } else if (direction == "d") {
+           if (generated_maze[player_x + 1][player_y] != 1) {
+               player_x += 1;
+           } else {
+               cout << "\n" << "You can't move there! Try doing something else." << "\n";
+           }
+       } else if (direction == "s") {
+           if (generated_maze[player_x][player_y + 1] != 1) {
+               player_y += 1;
+           } else {
+               cout << "\n" << "You can't move there! Try doing something else." << "\n";
+           }
+       } else {
+           cout << "\n" << "Invalid action." << "\n";
+       }
+}
 
 vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
 //generate the maze for the game
@@ -77,9 +120,9 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
         if (current_y > 1)
         {
           if (tile_maze[current_x][current_y - 1] == 1
-              and tile_maze[current_x][current_y - 2] == 1
-              and tile_maze[current_x - 1][current_y - 1] == 1
-              and tile_maze[current_x + 1][current_y - 1] == 1)
+              && tile_maze[current_x][current_y - 2] == 1
+              && tile_maze[current_x - 1][current_y - 1] == 1
+              && tile_maze[current_x + 1][current_y - 1] == 1)
           {
               available.push_back({current_x, current_y - 1});
           }
@@ -88,9 +131,9 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
         if (current_x < size(tile_maze) - 2)
         {
             if (tile_maze[current_x + 1][current_y] == 1
-                and tile_maze[current_x + 2][current_y] == 1
-                and tile_maze[current_x + 1][current_y - 1] == 1
-                and tile_maze[current_x + 1][current_y + 1] == 1)
+                && tile_maze[current_x + 2][current_y] == 1
+                && tile_maze[current_x + 1][current_y - 1] == 1
+                && tile_maze[current_x + 1][current_y + 1] == 1)
             {
                 available.push_back({current_x + 1, current_y});
             }
@@ -99,9 +142,9 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
         if (current_y < size(tile_maze) - 2)
         {
             if (tile_maze[current_x][current_y + 1] == 1
-                and tile_maze[current_x][current_y + 2] == 1
-                and tile_maze[current_x - 1][current_y + 1] == 1
-                and tile_maze[current_x + 1][current_y + 1] == 1)
+                && tile_maze[current_x][current_y + 2] == 1
+                && tile_maze[current_x - 1][current_y + 1] == 1
+                && tile_maze[current_x + 1][current_y + 1] == 1)
             {
                 available.push_back({current_x, current_y + 1});
             }
@@ -110,9 +153,9 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
         if (current_x > 1)
         {
             if (tile_maze[current_x - 1][current_y] == 1
-                and tile_maze[current_x - 2][current_y] == 1
-                and tile_maze[current_x - 1][current_y - 1] == 1
-                and tile_maze[current_x - 1][current_y + 1] == 1)
+                && tile_maze[current_x - 2][current_y] == 1
+                && tile_maze[current_x - 1][current_y - 1] == 1
+                && tile_maze[current_x - 1][current_y + 1] == 1)
             {
                 available.push_back({current_x - 1, current_y});
             }
@@ -156,7 +199,7 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
 
         for (int x = 0; x < mazeSizeExt; x++)
         {
-            generated += ranges::count(tile_maze[x], 0);
+            generated += count(tile_maze[x].begin(), tile_maze[x].end(), 0);
         }
 
         //clear available vector before use in next iteration
@@ -189,7 +232,6 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
 
     //for loops to create return vector so maze can be used elsewhere
     vector<int> y_values;
-    vector<vector<int>> generated_maze;
     for (int x = 0; x < mazeSizeExt; x++)
     {
         for (int y = 0; y < mazeSizeExt; y++)
@@ -200,6 +242,5 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
         //clear before using again
         y_values.clear();
     }
-
     return generated_maze;
 }
