@@ -16,6 +16,7 @@ public:
 
     void newHud();
     void action(string command);
+    void updateSkeletons();
 
 private:
     vector<vector<int>> generated_maze;
@@ -23,4 +24,17 @@ private:
     int player_y = 1;
     int player_health = 5;
     int player_money = 0;
+
+    struct skeleton {
+        int mazeX = 0;
+        int mazeY = 0;
+        int health = 2;
+        int attackDamage = 1;
+
+        //stores available tiles in range
+        vector<vector<int>> available;
+
+    };
+    vector<skeleton> skeletonList;
+
 };

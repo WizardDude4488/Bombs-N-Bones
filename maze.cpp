@@ -74,6 +74,37 @@ void maze::action(string command)
 
 }
 
+void maze::updateSkeletons() {
+    for (int i = 0; i << size(skeletonList); i++) {
+        //calculate available tiles
+        int current_x = skeletonList[i].mazeX;
+        int current_y = skeletonList[i].mazeY;
+        vector<vector<int>> availableActions;
+
+
+
+            if (generated_maze[current_x][current_y - 1] != 1)
+            {
+                availableActions.push_back({current_x, current_y - 1});
+            }
+            if (generated_maze[current_x + 1][current_y] != 1)
+            {
+                availableActions.push_back({current_x + 1, current_y});
+            }
+            if (generated_maze[current_x][current_y + 1] != 1)
+            {
+                availableActions.push_back({current_x, current_y + 1});
+            }
+            if (generated_maze[current_x - 1][current_y] != 1) {
+                availableActions.push_back({current_x - 1, current_y});
+            }
+
+        //check available tiles for player
+        //create command string (up to two characters)
+
+    }
+}
+
 vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
     //generate the maze for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
