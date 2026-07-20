@@ -80,7 +80,8 @@ void maze::updateSkeletons() {
         int current_x = skeletonList[i].mazeX;
         int current_y = skeletonList[i].mazeY;
         vector<vector<int>> availableActions;
-
+            //need to check for player adjacency first
+            //iterate through actions list twice
 
 
             if (generated_maze[current_x][current_y - 1] != 1)
