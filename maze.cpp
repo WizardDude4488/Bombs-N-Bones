@@ -234,6 +234,7 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
             }
         }
     }
+    //cout << "\nDebug: Walkable calculation succeeded." << "\n";
 
     //generate x and y for the exit
     uniform_int_distribution<> exitDistWalkable(1, size(walkable));
@@ -247,7 +248,7 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
     walkable.erase(walkable.begin() + exit);
 
     //generate money locations
-    for (int positions = 0; positions < 0.1 * size(walkable); positions++) {
+    for (int positions = 0; positions < 0.15 * size(walkable); positions++) {
         uniform_int_distribution<> moneyDistWalkable(1, size(walkable));
         int listPos = moneyDistWalkable(gen);
         int moneyX = walkable.at(listPos).at(0);
