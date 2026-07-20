@@ -15,12 +15,12 @@ public:
     vector<vector<int>> generate_maze(int mazeSizeInt);
 
     void newHud();
-    void movePlayer(string direction);
+    void action(string command);
 
 private:
     vector<vector<int>> generated_maze;
     int player_x = 1;
     int player_y = 1;
-    int player_health;
-    int player_money;
+    int player_health = 5;
+    int player_money = 0;
 };

@@ -35,11 +35,11 @@ int main() {
         //printf(hud);
         //update positions and quantities
         Maze.newHud();
-        string movementDir;
+        string command;
         cout << "\n";
-        cin >> movementDir;
+        cin >> command;
 
-        Maze.movePlayer(movementDir);
+        Maze.action(command);
         //end game once exit reached
         if (leaveMaze)
         {

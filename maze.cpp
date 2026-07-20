@@ -21,44 +21,60 @@ void maze::newHud()
     //update positions and quantities
     cout << generated_maze[player_x - 1][player_y - 1] << "  "
     << generated_maze[player_x][player_y - 1] << "  "
-    << generated_maze[player_x + 1][player_y - 1] << "     Enter one command at a time." << "\n"
+    << generated_maze[player_x + 1][player_y - 1] << "     Enter one command at a time. Or, you can string together up to three commands using a single string, such" << "\n"
     << generated_maze[player_x - 1][player_y] << "  "
     << generated_maze[player_x][player_y] << "  "
-    << generated_maze[player_x + 1][player_y] << "     Use wasd to move, e to pickup, and q to attack." "\n"
+    << generated_maze[player_x + 1][player_y] << "     as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack." "\n"
     << generated_maze[player_x - 1][player_y + 1] << "  "
     << generated_maze[player_x][player_y + 1] << "  "
-    << generated_maze[player_x + 1][player_y + 1];
+    << generated_maze[player_x + 1][player_y + 1] << "     Health: " << player_health << " " << "Money: " << player_money;
 };
 
-void maze::movePlayer(string direction)
+void maze::action(string command)
 {
-       if (direction == "a") {
-           if (generated_maze[player_x - 1][player_y] != 1) {
-               player_x -= 1;
-           } else {
-               cout << "\n" << "You can't move there! Try doing something else." << "\n";
-           }
-       } else if (direction == "w") {
-           if (generated_maze[player_x][player_y - 1] != 1) {
-               player_y -= 1;
-           } else {
-               cout << "\n" << "You can't move there! Try doing something else." << "\n";
-           }
-       } else if (direction == "d") {
-           if (generated_maze[player_x + 1][player_y] != 1) {
-               player_x += 1;
-           } else {
-               cout << "\n" << "You can't move there! Try doing something else." << "\n";
-           }
-       } else if (direction == "s") {
-           if (generated_maze[player_x][player_y + 1] != 1) {
-               player_y += 1;
-           } else {
-               cout << "\n" << "You can't move there! Try doing something else." << "\n";
-           }
-       } else {
-           cout << "\n" << "Invalid action." << "\n";
-       }
+    //using the older version || operator for compatibility
+    //'' used to specify chars, "" used to specify string. Not interchangeable since the two are distinct data types
+    //need to account for varying string length
+    for (int i = 0; i < size(command) || i < 3; i++) {
+        if (command[i] == 'e') {
+            if (generated_maze.at(player_x).at(player_y) == 2) {
+            //increment money, set tile to normal path
+            player_money += 1;
+            generated_maze.at(player_x).at(player_y) = 0;
+        } else {
+            cout << "\n" << "It seems there was nothing to interact with there." << "\n";
+        }
+
+        if (command[i] == 'a') {
+            if (generated_maze[player_x - 1][player_y] != 1) {
+                player_x -= 1;
+            } else {
+                cout << "\n" << "You can't move there! Try doing something else." << "\n";
+            }
+        } else if (command[i] == 'w') {
+            if (generated_maze[player_x][player_y - 1] != 1) {
+                player_y -= 1;
+            } else {
+                cout << "\n" << "You can't move there! Try doing something else." << "\n";
+            }
+        } else if (command[i] == 'd') {
+            if (generated_maze[player_x + 1][player_y] != 1) {
+                player_x += 1;
+            } else {
+                cout << "\n" << "You can't move there! Try doing something else." << "\n";
+            }
+        } else if (command[i] == 's') {
+            if (generated_maze[player_x][player_y + 1] != 1) {
+                player_y += 1;
+            } else {
+                cout << "\n" << "You can't move there! Try doing something else." << "\n";
+            }
+        } else {
+            cout << "\n" << "Invalid action." << "\n";
+        }
+    }
+    }
+
 }
 
 vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
@@ -212,7 +228,7 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
 
     for (int x = 0; x < mazeSizeExt; x++) {
         for (int y = 0; y < mazeSizeExt; y++) {
-            if (tile_maze[x][y] == 0) {
+            if (tile_maze.at(x).at(y) == 0) {
                 walkable.push_back({x, y});
             }
         }
@@ -224,7 +240,7 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
 
     int exitX = walkable.at(exit).at(0);
     int exitY = walkable.at(exit).at(1);
-    generated_maze.at(exitX).at(exitY) = 2;
+    tile_maze.at(exitX).at(exitY) = 3;
 
     //remove the point where the exit was generated
     walkable.erase(walkable.begin() + exit);
@@ -233,8 +249,12 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
     for (int positions = 0; positions < 0.1 * size(walkable); positions++) {
         uniform_int_distribution<> moneyDistWalkable(1, size(walkable));
         int listPos = moneyDistWalkable(gen);
+        int moneyX = walkable.at(listPos).at(0);
+        int moneyY = walkable.at(listPos).at(1);
+        tile_maze.at(moneyX).at(moneyY) = 2;
         walkable.erase(walkable.begin() + listPos);
     }
+
 
     //loops to print the tile map when finished
     cout << "\n";
@@ -243,12 +263,16 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
         for (int x = 0; x < mazeSizeExt; x++)
         {
             int value = tile_maze.at(x).at(y);
-            if (value == 0)
-            {
+            if (value == 0) {
                 cout << "0" << "  ";
-            } else if (value == 1)
-            {
+            } else if (value == 1) {
                 cout << "1" << "  ";
+            } else if (value == 2) {
+                cout << "2" << "  ";
+            } else if (value == 3) {
+                cout << "3" << "  ";
+            } else {
+                cout << "!" << "  ";
             }
         }
         cout << "\n";
