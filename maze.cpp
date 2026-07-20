@@ -19,7 +19,7 @@ void maze::newHud()
     //hud (3*3 grid, instructions for actions, place to enter letter for action)
     //printf(hud);
     //update positions and quantities
-    cout << generated_maze[player_x - 1][player_y - 1] << "  "
+    cout << "\n" << generated_maze[player_x - 1][player_y - 1] << "  "
     << generated_maze[player_x][player_y - 1] << "  "
     << generated_maze[player_x + 1][player_y - 1] << "     Enter one command at a time. Or, you can string together up to three commands using a single string, such" << "\n"
     << generated_maze[player_x - 1][player_y] << "  "
@@ -41,12 +41,8 @@ void maze::action(string command)
                 //increment money, set tile to normal path
                 player_money += 1;
                 generated_maze.at(player_x).at(player_y) = 0;
-            } else {
-                cout << "\n" << "It seems there was nothing to interact with there." << "\n";
             }
-        }
-
-        if (command[i] == 'a') {
+        } else if (command[i] == 'a') {
             if (generated_maze[player_x - 1][player_y] != 1) {
                 player_x -= 1;
             } else {
@@ -246,6 +242,15 @@ vector<vector<int>> maze::generate_maze(int mazeSizeInt) {
 
     //remove the point where the exit was generated
     walkable.erase(walkable.begin() + exit);
+
+    //generated x and y for the entrance
+    uniform_int_distribution<> entranceDistWalkable(1, size(walkable));
+    int entrance = entranceDistWalkable(gen);
+
+    int entranceX = walkable.at(entrance).at(0);
+    int entranceY = walkable.at(entrance).at(1);
+    player_x = entranceX;
+    player_y = entranceY;
 
     //generate money locations
     for (int positions = 0; positions < 0.15 * size(walkable); positions++) {
