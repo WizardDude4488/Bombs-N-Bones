@@ -35,14 +35,15 @@ void maze::action(string command)
     //using the older version || operator for compatibility
     //'' used to specify chars, "" used to specify string. Not interchangeable since the two are distinct data types
     //need to account for varying string length
-    for (int i = 0; i < size(command) || i < 3; i++) {
+    for (int i = 0; i < size(command) && i < 3; i++) {
         if (command[i] == 'e') {
             if (generated_maze.at(player_x).at(player_y) == 2) {
-            //increment money, set tile to normal path
-            player_money += 1;
-            generated_maze.at(player_x).at(player_y) = 0;
-        } else {
-            cout << "\n" << "It seems there was nothing to interact with there." << "\n";
+                //increment money, set tile to normal path
+                player_money += 1;
+                generated_maze.at(player_x).at(player_y) = 0;
+            } else {
+                cout << "\n" << "It seems there was nothing to interact with there." << "\n";
+            }
         }
 
         if (command[i] == 'a') {
@@ -72,7 +73,7 @@ void maze::action(string command)
         } else {
             cout << "\n" << "Invalid action." << "\n";
         }
-    }
+
     }
 
 }
