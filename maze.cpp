@@ -61,6 +61,8 @@ void maze::action(string command)
                 //increment money, set tile to normal path
                 player_money += 1;
                 generated_maze.at(player_x).at(player_y).money = false;
+            } if (generated_maze.at(player_x).at(player_y).exit) {
+                exitFound = true;
             }
         } else if (command[i] == 'a') {
             if (generated_maze.at(player_x - 1).at(player_y).base != 1) {

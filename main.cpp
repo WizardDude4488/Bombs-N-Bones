@@ -41,11 +41,9 @@ int main() {
 
         Maze.action(command);
         //end game once exit reached
-        if (leaveMaze)
+        if (Maze.exitFound)
         {
             playing = false;
-        } else {
-            continue;
         }
     }
 

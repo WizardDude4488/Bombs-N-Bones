@@ -33,6 +33,9 @@ public:
         vector<vector<int>> available;
 
     };
+
+    bool exitFound = false;
+
     vector<skeleton> skeletonList;
 
     //methods declared after structs are created
