@@ -11,20 +11,13 @@ using namespace std;
 class maze
 {
 public:
-    maze();
-    vector<vector<int>> generate_maze(int mazeSizeInt);
-
-    void newHud();
-    void action(string command);
-    void updateSkeletons();
-
-private:
     struct tile {
         int base = 0;
-        bool player = false;
         bool skeleton = false;
+        bool money = false;
+        bool exit = false;
     };
-    vector<vector<int>> generated_maze;
+    vector<vector<tile>> generated_maze;
     int player_x = 1;
     int player_y = 1;
     int player_health = 5;
@@ -42,4 +35,14 @@ private:
     };
     vector<skeleton> skeletonList;
 
+    //methods declared after structs are created
+    maze();
+    vector<vector<tile>> generate_maze(int mazeSizeInt);
+
+    void newHud();
+    void action(string command);
+    void updateSkeletons();
+
+private:
+    int visualTile(int x, int y);
 };
