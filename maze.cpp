@@ -113,20 +113,19 @@ void maze::updateSkeletons() {
                 }
             //iterate through actions list twice
 
-
-            if (generated_maze[current.x][current.y - 1].base != 1)
+            if (generated_maze.at(current.x).at(current.y - 1).base != 1)
             {
                 available.push_back({current.x, current.y - 1});
             }
-            if (generated_maze[current.x + 1][current.y].base != 1)
+            if (generated_maze.at(current.x + 1).at(current.y).base != 1)
             {
                 available.push_back({current.x + 1, current.y});
             }
-            if (generated_maze[current.x][current.y + 1].base != 1)
+            if (generated_maze.at(current.x).at(current.y + 1).base != 1)
             {
                 available.push_back({current.x, current.y + 1});
             }
-            if (generated_maze[current.x - 1][current.y].base != 1) {
+            if (generated_maze.at(current.x - 1).at(current.y).base != 1) {
                 available.push_back({current.x - 1, current.y});
             }
 
@@ -134,8 +133,8 @@ void maze::updateSkeletons() {
             int indices = 0;
             indices = distAvailable(gen);
 
-            current.x = available[indices][0];
-            current.y = available[indices][1];
+            current.x = available.at(indices).at(0);
+            current.y = available.at(indices).at(1);
         }
     }
 }
@@ -348,9 +347,13 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     for (int positions = 0; positions < 0.06 * size(walkable); positions++) {
         uniform_int_distribution<> moneyDistWalkable(1, size(walkable));
         int listPos = moneyDistWalkable(gen);
-        int skeletonX = walkable.at(listPos).at(0);
-        int skeletonY = walkable.at(listPos).at(1);
-        generated_maze.at(skeletonX).at(skeletonY).skeleton = true;
+        skeleton current;
+        current.x = walkable.at(listPos).at(0);
+        current.y = walkable.at(listPos).at(1);
+        //add skeleton at chosen position to list
+        skeletonList.push_back(current);
+        //update tile information
+        generated_maze.at(current.x).at(current.y).skeleton = true;
         walkable.erase(walkable.begin() + listPos);
     }
 
