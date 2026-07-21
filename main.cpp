@@ -39,6 +39,8 @@ int main() {
         cout << "\n";
         cin >> command;
 
+        Maze.updateSkeletons();
+
         Maze.action(command);
         //end game once exit reached
         if (Maze.exitFound)
