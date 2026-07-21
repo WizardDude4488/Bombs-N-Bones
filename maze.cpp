@@ -77,32 +77,49 @@ void maze::action(string command)
 void maze::updateSkeletons() {
     for (int i = 0; i << size(skeletonList); i++) {
         //calculate available tiles
-        int current_x = skeletonList[i].mazeX;
-        int current_y = skeletonList[i].mazeY;
-        vector<vector<int>> availableActions;
+        skeleton current = skeletonList[i];
+        vector<vector<int>> available;
+
+        //two available actions in string
+        for (int j = 0; j << 2; j++) {
             //need to check for player adjacency first
+            if (current.x == player_x && current.y == player_y ||
+                current.x + 1 == player_x && current.y == player_y ||
+                current.x - 1 == player_x && current.y == player_y ||
+                current.x == player_x && current.y + 1 == player_y ||
+                current.x == player_x && current.y - 1 == player_y) {
+                player_health -= 1;
+                continue;
+                }
             //iterate through actions list twice
 
 
-            if (generated_maze[current_x][current_y - 1] != 1)
+            if (generated_maze[current.x][current.y - 1] != 1)
             {
-                availableActions.push_back({current_x, current_y - 1});
+                available.push_back({current.x, current.y - 1});
             }
-            if (generated_maze[current_x + 1][current_y] != 1)
+            if (generated_maze[current.x + 1][current.y] != 1)
             {
-                availableActions.push_back({current_x + 1, current_y});
+                available.push_back({current.x + 1, current.y});
             }
-            if (generated_maze[current_x][current_y + 1] != 1)
+            if (generated_maze[current.x][current.y + 1] != 1)
             {
-                availableActions.push_back({current_x, current_y + 1});
+                available.push_back({current.x, current.y + 1});
             }
-            if (generated_maze[current_x - 1][current_y] != 1) {
-                availableActions.push_back({current_x - 1, current_y});
+            if (generated_maze[current.x - 1][current.y] != 1) {
+                available.push_back({current.x - 1, current.y});
             }
 
-        //check available tiles for player
-        //create command string (up to two characters)
+            uniform_int_distribution<int> distAvailable(0, size(available) - 1);
+            int indices = 0;
+            indices = distAvailable(gen);
 
+            current.x = available[indices][0];
+            current.y = available[indices][1];
+
+            //set current tile equal to previous value (money, walkable, etc.)
+            generated_maze[current.x][current.y] = 0;
+        }
     }
 }
 

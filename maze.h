@@ -19,6 +19,11 @@ public:
     void updateSkeletons();
 
 private:
+    struct tile {
+        int base = 0;
+        bool player = false;
+        bool skeleton = false;
+    };
     vector<vector<int>> generated_maze;
     int player_x = 1;
     int player_y = 1;
@@ -26,8 +31,8 @@ private:
     int player_money = 0;
 
     struct skeleton {
-        int mazeX = 0;
-        int mazeY = 0;
+        int x = 0;
+        int y = 0;
         int health = 2;
         int attackDamage = 1;
 
