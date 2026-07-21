@@ -103,7 +103,7 @@ void maze::updateSkeletons() {
         vector<vector<int>> available;
 
         //two available actions in string
-        for (int j = 0; j << 2; j++) {
+        for (int j = 0; j << 0; j++) {
             //need to check for player adjacency first
             if (current.x == player_x && current.y == player_y ||
                 current.x + 1 == player_x && current.y == player_y ||
@@ -115,28 +115,31 @@ void maze::updateSkeletons() {
                 }
             //iterate through actions list twice
 
-            if (generated_maze.at(current.x).at(current.y - 1).base != 1)
+            if (generated_maze.at(current.x).at(current.y - 1).base == 0)
             {
                 available.push_back({current.x, current.y - 1});
             }
-            if (generated_maze.at(current.x + 1).at(current.y).base != 1)
+            if (generated_maze.at(current.x + 1).at(current.y).base == 0)
             {
                 available.push_back({current.x + 1, current.y});
             }
-            if (generated_maze.at(current.x).at(current.y + 1).base != 1)
+            if (generated_maze.at(current.x).at(current.y + 1).base == 0)
             {
                 available.push_back({current.x, current.y + 1});
             }
-            if (generated_maze.at(current.x - 1).at(current.y).base != 1) {
+            if (generated_maze.at(current.x - 1).at(current.y).base == 0) {
                 available.push_back({current.x - 1, current.y});
             }
 
             uniform_int_distribution<int> distAvailable(0, size(available) - 1);
-            int indices = 0;
-            indices = distAvailable(gen);
+            int option = 0;
+            option = distAvailable(gen);
+            generated_maze.at(current.x).at(current.y).skeleton = false;
 
-            current.x = available.at(indices).at(0);
-            current.y = available.at(indices).at(1);
+            current.x = available.at(option).at(0);
+            current.y = available.at(option).at(1);
+            generated_maze.at(current.x).at(current.y).skeleton = true;
+
         }
     }
 }
