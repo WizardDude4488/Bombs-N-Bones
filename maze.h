@@ -17,7 +17,10 @@ public:
         bool money = false;
         bool exit = false;
     };
+
     vector<vector<tile>> generated_maze;
+    int mazeSizeExt;
+
     int player_x = 1;
     int player_y = 1;
     int player_health = 5;
@@ -50,6 +53,7 @@ public:
     void newHud();
     void action(string command);
     void updateSkeletons();
+    void printMaze();
 
 
 

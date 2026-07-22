@@ -143,7 +143,7 @@ void maze::updateSkeletons() {
         skeleton current = skeletonList[i];
 
         //two available actions in string
-        //for (int j = 0; j << 0; j++) {
+        for (int j = 0; j < 2; j++) {
             //remove from list if health == 0
             if (skeletonList[i].health == 0) {
                 std::erase(skeletonList, current);
@@ -159,35 +159,36 @@ void maze::updateSkeletons() {
                 (current.x == player_x && current.y - 1 == player_y)) {
                 player_health -= 1;
                 } else {
-                vector<vector<int>> available;
-                //iterate through actions list twice
+                    vector<vector<int>> available;
+                    //iterate through actions list twice
 
-            if (generated_maze.at(current.x).at(current.y - 1).base == 0)
-            {
-                available.push_back({current.x, current.y - 1});
-            }
-            if (generated_maze.at(current.x + 1).at(current.y).base == 0)
-            {
-                available.push_back({current.x + 1, current.y});
-            }
-            if (generated_maze.at(current.x).at(current.y + 1).base == 0)
-            {
-                available.push_back({current.x, current.y + 1});
-            }
-            if (generated_maze.at(current.x - 1).at(current.y).base == 0) {
-                available.push_back({current.x - 1, current.y});
-            }
+                    if (generated_maze.at(current.x).at(current.y - 1).base == 0)
+                    {
+                        available.push_back({current.x, current.y - 1});
+                    }
+                    if (generated_maze.at(current.x + 1).at(current.y).base == 0)
+                    {
+                        available.push_back({current.x + 1, current.y});
+                    }
+                    if (generated_maze.at(current.x).at(current.y + 1).base == 0)
+                    {
+                        available.push_back({current.x, current.y + 1});
+                    }
+                    if (generated_maze.at(current.x - 1).at(current.y).base == 0) {
+                        available.push_back({current.x - 1, current.y});
+                    }
 
-            uniform_int_distribution<> distAvailable(0, size(available) - 1);
-            int option = 0;
-            option = distAvailable(gen);
-            generated_maze.at(current.x).at(current.y).skeleton = false;
+                    uniform_int_distribution<> distAvailable(0, size(available) - 1);
+                    int option = 0;
+                    option = distAvailable(gen);
+                    generated_maze.at(current.x).at(current.y).skeleton = false;
 
-            //need to modify the actual struct, not just a variable that is based on it
-            skeletonList[i].x = available.at(option).at(0);
-            skeletonList[i].y = available.at(option).at(1);
-            generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
+                    //need to modify the actual struct, not just a variable that is based on it
+                    skeletonList[i].x = available.at(option).at(0);
+                    skeletonList[i].y = available.at(option).at(1);
+                    generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
 
+                }
         }
     }
 }
@@ -196,7 +197,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     //generate the maze for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
     //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end, 6 = boundary. If not 0, then not empty.//"mazeSizeInt" internal maze size
-    int mazeSizeExt = mazeSizeInt + 2; //external is internal plus one boundary tile on each side for both dimensions, so plus two
+    mazeSizeExt = mazeSizeInt + 2; //external is internal plus one boundary tile on each side for both dimensions, so plus two
     vector<vector<int>> tile_maze{};
     vector<int> tile_maze_y;
 
@@ -410,8 +411,12 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
         walkable.erase(walkable.begin() + listPos);
     }
 
+    return generated_maze;
+}
+
 
     //loops to print the tile map when finished
+void maze::printMaze() {
     cout << "\n";
     for (int y = 0; y < mazeSizeExt; y++)
     {
@@ -436,8 +441,6 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
         }
         cout << "\n";
     }
-
-    return generated_maze;
 }
 
 

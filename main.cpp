@@ -35,6 +35,7 @@ int main() {
         //printf(hud);
         //update positions and quantities
         Maze.updateSkeletons();
+        Maze.printMaze();
         Maze.newHud();
         string command;
         cout << "\n";
