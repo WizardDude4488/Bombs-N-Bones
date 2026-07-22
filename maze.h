@@ -45,6 +45,7 @@ public:
     void newHud();
     void action(string command);
     void updateSkeletons();
+    auto findElement(auto vector, auto value);
 
 private:
     int visualTile(int x, int y);

@@ -2,10 +2,8 @@
 
 #include <array>
 #include <iostream>
-#include <map>
 #include <random>
 #include <string>
-#include <tuple>
 #include <algorithm>
 using namespace std;
 
@@ -13,6 +11,10 @@ random_device rd;
 mt19937 gen(rd());
 
 maze::maze() {}
+
+auto maze::findElement(auto vector, auto value) {
+    return std::ranges::find(vector, value);
+}
 
 void maze::newHud()
 {
@@ -88,7 +90,25 @@ void maze::action(string command)
             } else {
                 cout << "\n" << "You can't move there! Try doing something else." << "\n";
             }
-        } else {
+        } else if (command[i] == 'q') {
+            if (generated_maze.at(player_x).at(player_y + 1).skeleton) {
+                skeleton current;
+                current.x = player_x, current.y = player_y + 1;
+                int location = findElement(skeletonList, current);
+                skeletonList[location].health -= 1;
+            }
+
+            if (generated_maze.at(player_x).at(player_y).skeleton) {
+                skeleton current;
+                current.x = player_x, current.y = player_y;
+                int location = findElement(skeletonList, current);
+                skeletonList[location].health -= 1;
+            }
+            if (generated_maze.at(player_x).at(player_y - 1).skeleton)
+            if (generated_maze.at(player_x - 1).at(player_y).skeleton)
+            if (generated_maze.at(player_x + 1).at(player_y).skeleton)
+        }
+        else {
             cout << "\n" << "Invalid action." << "\n";
         }
 
@@ -100,20 +120,19 @@ void maze::updateSkeletons() {
     for (int i = 0; i << size(skeletonList); i++) {
         //calculate available tiles
         skeleton current = skeletonList[i];
-        vector<vector<int>> available;
 
         //two available actions in string
-        for (int j = 0; j << 0; j++) {
+        //for (int j = 0; j << 0; j++) {
             //need to check for player adjacency first
-            if (current.x == player_x && current.y == player_y ||
-                current.x + 1 == player_x && current.y == player_y ||
-                current.x - 1 == player_x && current.y == player_y ||
-                current.x == player_x && current.y + 1 == player_y ||
-                current.x == player_x && current.y - 1 == player_y) {
+            if ((current.x == player_x && current.y == player_y) ||
+                (current.x + 1 == player_x && current.y == player_y) ||
+                (current.x - 1 == player_x && current.y == player_y) ||
+                (current.x == player_x && current.y + 1 == player_y) ||
+                (current.x == player_x && current.y - 1 == player_y)) {
                 player_health -= 1;
-                continue;
-                }
-            //iterate through actions list twice
+                } else {
+                vector<vector<int>> available;
+                //iterate through actions list twice
 
             if (generated_maze.at(current.x).at(current.y - 1).base == 0)
             {
@@ -131,14 +150,15 @@ void maze::updateSkeletons() {
                 available.push_back({current.x - 1, current.y});
             }
 
-            uniform_int_distribution<int> distAvailable(0, size(available) - 1);
+            uniform_int_distribution<> distAvailable(0, size(available) - 1);
             int option = 0;
             option = distAvailable(gen);
             generated_maze.at(current.x).at(current.y).skeleton = false;
 
-            current.x = available.at(option).at(0);
-            current.y = available.at(option).at(1);
-            generated_maze.at(current.x).at(current.y).skeleton = true;
+            //need to modify the actual struct, not just a variable that is based on it
+            skeletonList[i].x = available.at(option).at(0);
+            skeletonList[i].y = available.at(option).at(1);
+            generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
 
         }
     }
