@@ -94,6 +94,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
+                cout << "\n" << "skeleton hurt";
             }
             if (generated_maze.at(player_x).at(player_y).skeleton) {
                 skeleton current;
@@ -101,6 +102,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
+                cout << "\n" << "skeleton hurt";
             }
             if (generated_maze.at(player_x).at(player_y - 1).skeleton) {
                 skeleton current;
@@ -108,6 +110,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
+                cout << "\n" << "skeleton hurt";
             }
             if (generated_maze.at(player_x - 1).at(player_y).skeleton) {
                 skeleton current;
@@ -115,6 +118,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
+                cout << "\n" << "skeleton hurt";
             }
             if (generated_maze.at(player_x + 1).at(player_y).skeleton) {
                 skeleton current;
@@ -122,6 +126,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
+                cout << "\n" << "skeleton hurt";
             }
         }
         else {
@@ -133,13 +138,20 @@ void maze::action(string command)
 }
 
 void maze::updateSkeletons() {
-    for (int i = 0; i << size(skeletonList); i++) {
+    for (int i = 0; i < size(skeletonList); i++) {
         //calculate available tiles
         skeleton current = skeletonList[i];
 
         //two available actions in string
         //for (int j = 0; j << 0; j++) {
-            //need to check for player adjacency first
+            //remove from list if health == 0
+            if (skeletonList[i].health == 0) {
+                std::erase(skeletonList, current);
+                generated_maze.at(current.x).at(current.y).skeleton = false;
+                cout << "\n" << "skeleton killed";
+            }
+
+            //need to check for player adjacency
             if ((current.x == player_x && current.y == player_y) ||
                 (current.x + 1 == player_x && current.y == player_y) ||
                 (current.x - 1 == player_x && current.y == player_y) ||
