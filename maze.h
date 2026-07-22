@@ -32,6 +32,11 @@ public:
         //stores available tiles in range
         vector<vector<int>> available;
 
+        //operator for list search
+        bool operator==(const skeleton& other) const {
+            return x == other.x && y == other.y;
+        }
+
     };
 
     bool exitFound = false;
@@ -45,7 +50,8 @@ public:
     void newHud();
     void action(string command);
     void updateSkeletons();
-    auto findElement(auto vector, auto value);
+
+
 
 private:
     int visualTile(int x, int y);

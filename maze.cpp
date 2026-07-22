@@ -7,14 +7,11 @@
 #include <algorithm>
 using namespace std;
 
+
 random_device rd;
 mt19937 gen(rd());
 
 maze::maze() {}
-
-auto maze::findElement(auto vector, auto value) {
-    return std::ranges::find(vector, value);
-}
 
 void maze::newHud()
 {
@@ -94,19 +91,38 @@ void maze::action(string command)
             if (generated_maze.at(player_x).at(player_y + 1).skeleton) {
                 skeleton current;
                 current.x = player_x, current.y = player_y + 1;
-                int location = findElement(skeletonList, current);
-                skeletonList[location].health -= 1;
+                auto it = std::ranges::find(skeletonList, current);
+                int index = distance(skeletonList.begin(), it);
+                skeletonList[index].health -= 1;
             }
-
             if (generated_maze.at(player_x).at(player_y).skeleton) {
                 skeleton current;
                 current.x = player_x, current.y = player_y;
-                int location = findElement(skeletonList, current);
-                skeletonList[location].health -= 1;
+                auto it = std::ranges::find(skeletonList, current);
+                int index = distance(skeletonList.begin(), it);
+                skeletonList[index].health -= 1;
             }
-            if (generated_maze.at(player_x).at(player_y - 1).skeleton)
-            if (generated_maze.at(player_x - 1).at(player_y).skeleton)
-            if (generated_maze.at(player_x + 1).at(player_y).skeleton)
+            if (generated_maze.at(player_x).at(player_y - 1).skeleton) {
+                skeleton current;
+                current.x = player_x, current.y = player_y - 1;
+                auto it = std::ranges::find(skeletonList, current);
+                int index = distance(skeletonList.begin(), it);
+                skeletonList[index].health -= 1;
+            }
+            if (generated_maze.at(player_x - 1).at(player_y).skeleton) {
+                skeleton current;
+                current.x = player_x - 1, current.y = player_y;
+                auto it = std::ranges::find(skeletonList, current);
+                int index = distance(skeletonList.begin(), it);
+                skeletonList[index].health -= 1;
+            }
+            if (generated_maze.at(player_x + 1).at(player_y).skeleton) {
+                skeleton current;
+                current.x = player_x + 1, current.y = player_y;
+                auto it = std::ranges::find(skeletonList, current);
+                int index = distance(skeletonList.begin(), it);
+                skeletonList[index].health -= 1;
+            }
         }
         else {
             cout << "\n" << "Invalid action." << "\n";
