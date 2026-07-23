@@ -34,12 +34,12 @@ int main() {
         //hud (3*3 grid, instructions for actions, place to enter letter for action)
         //printf(hud);
         //update positions and quantities
-        Maze.updateSkeletons();
         Maze.printMaze();
         Maze.newHud();
         string command;
         cout << "\n";
         cin >> command;
+        Maze.updateSkeletons();
 
         Maze.action(command);
         //end game once exit reached

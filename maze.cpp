@@ -5,6 +5,7 @@
 #include <random>
 #include <string>
 #include <algorithm>
+#include <cmath>
 using namespace std;
 
 
@@ -47,6 +48,48 @@ int maze::visualTile(int x, int y) {
     }
 
     return value;
+}
+
+vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int caller_y, int crossDistance = 0) {
+    //takes in the target coordinates, the caller's coordinates, and the cross length to search on
+    //returns a vector of (isAdjacent, distance, direction) for cross adjacency
+    int isAdjacent = 0;
+    int distance = 0;
+    int direction = 0;
+    int withinRange = 0;
+
+    if (target_x == caller_x ||
+        target_y == caller_y) {
+
+        isAdjacent = 1;
+
+        if (abs(target_x - caller_x) != 0) {
+            distance = abs(target_x - caller_y);
+            if (target_x > caller_x) direction = 2;
+            if (target_x < caller_x) direction = 4;
+        }
+
+        if (abs(target_y - caller_y) != 0) {
+            distance = abs(target_y - caller_y);
+            if (target_y > caller_y) direction = 3;
+            if (target_y < caller_y) direction = 1;
+        }
+
+    } else {
+        isAdjacent = 0;
+        distance = 0;
+        direction = 0;
+    }
+
+    if (crossDistance == 0) {
+        withinRange = 1;
+    } else {
+        if (distance < crossDistance) withinRange = 1;
+        if (distance > crossDistance) withinRange = 0;
+    }
+
+    //direction uses 1 = up, 2 = right, 3 = down, 4 = left standard
+    return {isAdjacent, distance, direction, withinRange};
 }
 
 void maze::action(string command)
@@ -152,13 +195,10 @@ void maze::updateSkeletons() {
             }
 
             //need to check for player adjacency
-            if ((current.x == player_x && current.y == player_y) ||
-                (current.x + 1 == player_x && current.y == player_y) ||
-                (current.x - 1 == player_x && current.y == player_y) ||
-                (current.x == player_x && current.y + 1 == player_y) ||
-                (current.x == player_x && current.y - 1 == player_y)) {
+            if (cardinalAdjacent(player_x, player_y, current.x, current.y, 1).at(3) == 1) {
                 player_health -= 1;
                 } else {
+
                     vector<vector<int>> available;
                     //iterate through actions list twice
 

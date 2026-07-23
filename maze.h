@@ -54,6 +54,7 @@ public:
     void action(string command);
     void updateSkeletons();
     void printMaze();
+    vector<int> cardinalAdjacent(int target_x, int target_y, int caller_x, int caller_y, int crossDistance = 0);
 
 
 
