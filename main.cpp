@@ -43,7 +43,7 @@ int main() {
 
         Maze.action(command);
         //end game once exit reached
-        if (Maze.exitFound)
+        if (Maze.exitFound || Maze.playerDead)
         {
             playing = false;
         }

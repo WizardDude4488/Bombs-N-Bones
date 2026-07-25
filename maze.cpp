@@ -57,10 +57,8 @@ vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int
     int direction = 0;
     int withinRange = 0;
 
-    if (target_x == caller_x ||
-        target_y == caller_y) {
-
-        withinRange = 1;
+    if ((target_x == caller_x) ||
+        (target_y == caller_y)) {
 
         if (abs(target_x - caller_x) != 0) {
             distance = abs(target_x - caller_y);
@@ -74,8 +72,12 @@ vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int
             if (target_y < caller_y) direction = 1;
         }
 
+        if (abs(target_y - caller_y) != 0 && abs(target_y - caller_y != 0)) {
+            distance = floor(sqrt(pow((target_x - caller_x),2) + pow((target_y - caller_y),2)));
+        }
+
     } else {
-        distance = 0;
+        distance = 1000;
         direction = 0;
     }
 
@@ -184,7 +186,7 @@ void maze::updateSkeletons() {
         skeleton current = skeletonList[i];
 
         //two available actions in string
-        for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 1; j++) {
             //remove from list if health == 0
             if (skeletonList[i].health == 0) {
                 std::erase(skeletonList, current);
@@ -194,7 +196,7 @@ void maze::updateSkeletons() {
 
 
             //need to check for player adjacency on 1 long cross
-            if (cardinalAdjacent(player_x, player_y, current.x, current.y, 1).at(3) == 1) {
+            if (cardinalAdjacent(player_x, player_y, current.x, current.y, 2).at(2) == 1) {
                 player_health -= 1;
                 } else {
                     vector<vector<int>> available;

@@ -43,6 +43,7 @@ public:
     };
 
     bool exitFound = false;
+    bool playerDead = false;
 
     vector<skeleton> skeletonList;
 
