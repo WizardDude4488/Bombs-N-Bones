@@ -60,5 +60,5 @@ public:
 
 
 private:
-    int visualTile(int x, int y);
+    char visualTile(int x, int y);
 };

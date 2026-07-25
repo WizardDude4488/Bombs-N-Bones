@@ -30,20 +30,20 @@ void maze::newHud()
     << visualTile(player_x + 1, player_y + 1) << "     Health: " << player_health << " " << "Money: " << player_money;
 };
 
-int maze::visualTile(int x, int y) {
+char maze::visualTile(int x, int y) {
     tile currentTile = generated_maze.at(x).at(y);
-    int value = 0;
+    char value = '0';
     if (currentTile.base == 1) {
-        value = 1;
+        value = '1';
     } else if (currentTile.base == 0) {
         if (currentTile.skeleton) {
-            value = 4;
+            value = 's';
         } else if (currentTile.exit) {
-            value = 3;
+            value = 'e';
         } else if (currentTile.money) {
-            value = 2;
+            value = 'm';
         } else {
-            value = 0;
+            value = '0';
         }
     }
 
@@ -105,6 +105,7 @@ void maze::action(string command)
                 generated_maze.at(player_x).at(player_y).money = false;
             } if (generated_maze.at(player_x).at(player_y).exit) {
                 exitFound = true;
+                cout << "\n\n\n\n\n\n\nYou escaped! You left with " << player_money << "money. Thanks for playing!";
             }
         } else if (command[i] == 'a') {
             if (generated_maze.at(player_x - 1).at(player_y).base != 1) {
@@ -176,6 +177,10 @@ void maze::action(string command)
             cout << "\n" << "Invalid action." << "\n";
         }
 
+        if (player_health == 0) {
+            playerDead = true;
+            cout << "\n\n\n\n\n\n\n\nYou died! You had " << player_money << "money upon death. Better luck next time!";
+        }
     }
 
 }
@@ -475,19 +480,19 @@ void maze::printMaze() {
     {
         for (int x = 0; x < mazeSizeExt; x++)
         {
-            int value = 0;
+            char value = '0';
             value = visualTile(x, y);
 
-            if (value == 0) {
+            if (value == '0') {
                 cout << "0" << "  ";
-            } else if (value == 1) {
+            } else if (value == '1') {
                 cout << "1" << "  ";
-            } else if (value == 2) {
-                cout << "2" << "  ";
-            } else if (value == 3) {
-                cout << "3" << "  ";
-            } else if (value == 4) {
-                cout << "4" << "  ";
+            } else if (value == 's') {
+                cout << "s" << "  ";
+            } else if (value == 'm') {
+                cout << "m" << "  ";
+            } else if (value == 'e') {
+                cout << "e" << "  ";
             } else {
                 cout << "!" << "  ";
             }
