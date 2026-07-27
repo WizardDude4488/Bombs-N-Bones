@@ -14,6 +14,7 @@ bool playing = true;
 bool menu = true;
 bool leaveMaze = false;
 string start;
+int mazeSize;
 
 maze Maze;
 
@@ -22,10 +23,16 @@ int main() {
     while (menu)
     {
         cout << "Welcome to Bombs N' Bones!\nThis is a simple text-based dungeon crawler\nWould you like to play?\n(y/n)"; cin >> start;
-        if (start[0] == 'y') {printf("start"); menu = false;} if (start[0] == 'n') {printf("quit"); menu = false; playing = false;}
+        if (start[0] == 'y') {
+            cout << "Enter an integer greater than 8 to select the maze size: "; cin >> mazeSize;
+            menu = false;
+        }
+        if (start[0] == 'n') {
+            printf("quit"); menu = false; playing = false;
+        }
     }
 
-    Maze.generate_maze(20);
+    Maze.generate_maze(mazeSize);
 
     //probably should implement this with a class and methods so it's more flexible
 
@@ -39,7 +46,6 @@ int main() {
         string command;
         cout << "\n";
         cin >> command;
-        Maze.updateSkeletons();
 
         Maze.action(command);
         //end game once exit reached
@@ -47,6 +53,8 @@ int main() {
         {
             playing = false;
         }
+
+        Maze.updateSkeletons();
     }
 
 /*

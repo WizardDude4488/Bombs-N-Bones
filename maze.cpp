@@ -42,6 +42,8 @@ char maze::visualTile(int x, int y) {
             value = 'e';
         } else if (currentTile.money) {
             value = 'm';
+        } else if (currentTile.bomb) {
+            value = 'b';
         } else {
             value = '0';
         }
@@ -49,10 +51,20 @@ char maze::visualTile(int x, int y) {
 
     return value;
 }
+int maze::bombCheck(int caller_x, int caller_y) {
+    uniform_int_distribution<> bombDamage(1, 5);
+    int damage = 0;
+    if (generated_maze.at(caller_x).at(caller_y).bomb) {
+        damage = bombDamage(gen);
+        generated_maze.at(caller_x).at(caller_y).bomb = false;
+    }
+    return damage;
+}
 
-vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int caller_y, int crossDistance = 0) {
+vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int caller_y, int range = 0) {
     //takes in the target coordinates, the caller's coordinates, and the cross length to search on
     //returns a vector of (isAdjacent, distance, direction) for cross adjacency
+    //0 = cross, 1 = square
     int distance = 0;
     int direction = 0;
     int withinRange = 0;
@@ -76,20 +88,78 @@ vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int
             distance = floor(sqrt(pow((target_x - caller_x),2) + pow((target_y - caller_y),2)));
         }
 
-    } else {
-        distance = 1000;
-        direction = 0;
-    }
+        } else {
+            distance = 1000;
+            direction = 0;
+        }
 
-    if (crossDistance == 0) {
+
+    if (range == 0) {
         withinRange = 1;
     } else {
-        if (distance < crossDistance) withinRange = 1;
-        if (distance > crossDistance) withinRange = 0;
+        if (distance < range) withinRange = 1;
+        if (distance > range) withinRange = 0;
     }
 
     //direction uses 1 = up, 2 = right, 3 = down, 4 = left standard
     return {distance, direction, withinRange};
+}
+
+vector<int> maze::targetFollow(int target_x = 0, int target_y = 0, int caller_x = 0, int caller_y = 0, int range = 0, char target = 'd') {
+    int distance = 0;
+    int direction = 0;
+    int withinRange = 0;
+    vector<int> availableDirections;
+
+    if (target == 'p') {
+        target_x = player_x;
+        target_y = player_y;
+    }
+
+    if (abs(target_y - caller_y) < range && abs(target_x - caller_x) < range) {
+        withinRange = 1;
+        if (target_x > caller_x) {
+            if (generated_maze.at(caller_x + 1).at(caller_y).base == 0) {
+                availableDirections.push_back(2);
+            }
+            if (generated_maze.at(caller_x + 1).at(caller_y + 1).base == 0 &&
+                generated_maze.at(caller_x).at(caller_y + 1).base == 0) {
+                availableDirections.push_back(3);
+            }
+            if (generated_maze.at(caller_x + 1).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
+                availableDirections.push_back(1);
+            }
+        }
+        if (target_x < caller_x) {
+            if (generated_maze.at(caller_x - 1).at(caller_y).base == 0) {
+                availableDirections.push_back(4);
+            }
+            if (generated_maze.at(caller_x - 1).at(caller_y + 1).base == 0 &&
+                generated_maze.at(caller_x).at(caller_y + 1).base == 0) {
+                availableDirections.push_back(3);
+                }
+            if (generated_maze.at(caller_x - 1).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
+                availableDirections.push_back(1);
+                }
+        }
+
+        if (target_y < caller_y) {
+            if (generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
+                availableDirections.push_back(4);
+            }
+            if (generated_maze.at(caller_x).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x).at(caller_y).base == 0) {
+                availableDirections.push_back(3);
+                }
+            if (generated_maze.at(caller_x).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
+                availableDirections.push_back(1);
+                }
+        }
+    }
+
 }
 
 void maze::action(string command)
@@ -105,7 +175,7 @@ void maze::action(string command)
                 generated_maze.at(player_x).at(player_y).money = false;
             } if (generated_maze.at(player_x).at(player_y).exit) {
                 exitFound = true;
-                cout << "\n\n\n\n\n\n\nYou escaped! You left with " << player_money << "money. Thanks for playing!";
+                cout << "\n\n\n\n\n\n\nYou escaped! You left with" << " " << player_money << " " << "money. Thanks for playing!";
             }
         } else if (command[i] == 'a') {
             if (generated_maze.at(player_x - 1).at(player_y).base != 1) {
@@ -172,6 +242,7 @@ void maze::action(string command)
                 skeletonList[index].health -= 1;
                 cout << "\n" << "skeleton hurt";
             }
+            player_health -= bombCheck(player_x, player_y);
         }
         else {
             cout << "\n" << "Invalid action." << "\n";
@@ -199,10 +270,10 @@ void maze::updateSkeletons() {
                 cout << "\n" << "skeleton killed";
             }
 
-
             //need to check for player adjacency on 1 long cross
             if (cardinalAdjacent(player_x, player_y, current.x, current.y, 2).at(2) == 1) {
                 player_health -= 1;
+                current.health -= bombCheck(current.x, current.y);
                 } else {
                     vector<vector<int>> available;
                     //iterate through actions list twice
@@ -255,7 +326,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     //generate the maze for the game
     //number code for square types: 0 = tunnel (can walk), 1 = wall (can't walk), 2 = exit (ends game if reached), 3 = skeleton, 4 = bomb, 5 = coin
     //number code for maze generation tile types: 0 = empty, 1 = up, 2 = right, 3 = down, 4 = left, 5 = dead end, 6 = boundary. If not 0, then not empty.//"mazeSizeInt" internal maze size
-    mazeSizeExt = mazeSizeInt + 2; //external is internal plus one boundary tile on each side for both dimensions, so plus two
+    mazeSizeExt = mazeSizeInt + 4; //external is internal plus one boundary tile on each side for both dimensions, so plus two
     vector<vector<int>> tile_maze{};
     vector<int> tile_maze_y;
 
@@ -283,8 +354,8 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     int indice = 0;
 
     //current position components
-    int current_x = 1;
-    int current_y = 1;
+    int current_x = 2;
+    int current_y = 2;
 
     //generate a maze
     //less than since condition will be true for the last iteration where size(stack) becomes = number_of_tiles during the iteration, thus completing the tile map
@@ -292,7 +363,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     vector<int> failed;
 
     //-1 since the last remaining zero tile should be the entrance to the maze
-    while (generated < floor(0.4 * number_of_tiles))
+    while (generated < floor(0.3 * number_of_tiles))
     {
         //pick an adjacent tile that hasn't been visited
         //if there isn't an unvisited tile adjacent, move backwards through stack by 1 entry
@@ -302,7 +373,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
         //check if the four cardinal directions are possible
         //check the possible cardinally adjacent tiles are empty
         //up
-        if (current_y > 1)
+        if (current_y > 2)
         {
             if (tile_maze[current_x][current_y - 1] == 1
                 && tile_maze[current_x][current_y - 2] == 1
@@ -313,7 +384,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
             }
         }
         //right
-        if (current_x < size(tile_maze) - 2)
+        if (current_x < size(tile_maze) - 3)
         {
             if (tile_maze[current_x + 1][current_y] == 1
                 && tile_maze[current_x + 2][current_y] == 1
@@ -324,7 +395,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
             }
         }
         //down
-        if (current_y < size(tile_maze) - 2)
+        if (current_y < size(tile_maze) - 3)
         {
             if (tile_maze[current_x][current_y + 1] == 1
                 && tile_maze[current_x][current_y + 2] == 1
@@ -335,7 +406,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
             }
         }
         //left
-        if (current_x > 1)
+        if (current_x > 2)
         {
             if (tile_maze[current_x - 1][current_y] == 1
                 && tile_maze[current_x - 2][current_y] == 1
@@ -469,6 +540,16 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
         walkable.erase(walkable.begin() + listPos);
     }
 
+    //generate bomb locations
+    for (int positions = 0; positions < 0.15 * size(walkable); positions++) {
+        uniform_int_distribution<> bombDistWalkable(1, size(walkable));
+        int listPos = bombDistWalkable(gen);
+        int bombX = walkable.at(listPos).at(0);
+        int bombY = walkable.at(listPos).at(1);
+        generated_maze.at(bombX).at(bombY).bomb = true;
+        walkable.erase(walkable.begin() + listPos);
+    }
+
     return generated_maze;
 }
 
@@ -493,6 +574,8 @@ void maze::printMaze() {
                 cout << "m" << "  ";
             } else if (value == 'e') {
                 cout << "e" << "  ";
+            } else if (value == 'b') {
+                cout << "b" << "  ";
             } else {
                 cout << "!" << "  ";
             }

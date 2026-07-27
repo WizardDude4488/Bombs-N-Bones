@@ -16,6 +16,7 @@ public:
         bool skeleton = false;
         bool money = false;
         bool exit = false;
+        bool bomb = false;
     };
 
     vector<vector<tile>> generated_maze;
@@ -23,7 +24,7 @@ public:
 
     int player_x = 1;
     int player_y = 1;
-    int player_health = 5;
+    int player_health = 20;
     int player_money = 0;
 
     struct skeleton {
@@ -55,7 +56,9 @@ public:
     void action(string command);
     void updateSkeletons();
     void printMaze();
-    vector<int> cardinalAdjacent(int target_x, int target_y, int caller_x, int caller_y, int crossDistance);
+    vector<int> cardinalAdjacent(int target_x, int target_y, int caller_x, int caller_y, int range);
+    vector<int> targetFollow(int target_x, int target_y, int caller_x, int caller_y, int range, char target);
+    int bombCheck(int caller_x, int caller_y);
 
 
 
