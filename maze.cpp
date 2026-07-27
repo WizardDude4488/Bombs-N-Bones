@@ -19,15 +19,11 @@ void maze::newHud()
     //hud (3*3 grid, instructions for actions, place to enter letter for action)
     //printf(hud);
     //update positions and quantities
-    cout << "\n" << visualTile(player_x - 1, player_y - 1) << "  "
-    << visualTile(player_x, player_y - 1) << "  "
-    << visualTile(player_x + 1, player_y - 1) << "     Enter one command at a time. Or, you can string together up to three commands using a single string, such" << "\n"
-    << visualTile(player_x - 1, player_y) << "  "
-    << visualTile(player_x, player_y) << "  "
-    << visualTile(player_x + 1, player_y) << "     as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack." "\n"
-    << visualTile(player_x - 1, player_y + 1) << "  "
-    << visualTile(player_x, player_y + 1) << "  "
-    << visualTile(player_x + 1, player_y + 1) << "     Health: " << player_health << " " << "Money: " << player_money;
+    cout << "\n" << visualTile(player_x - 2, player_y - 2) << "  " << visualTile(player_x - 1, player_y - 2) << "  " << visualTile(player_x, player_y - 2) << "  " << visualTile(player_x + 1, player_y - 2) << "  " << visualTile (player_x + 2, player_y - 2) << "     Enter one command at a time. Or, you can string together up to three commands using a single string, such"
+    << "\n" << visualTile(player_x - 2, player_y - 1) << "  " << visualTile(player_x - 1, player_y - 1) << "  " << visualTile(player_x, player_y - 1) << "  " << visualTile(player_x + 1, player_y - 1) << "  " << visualTile(player_x + 2, player_y - 1) << "     as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack."
+    << "\n" << visualTile(player_x - 2, player_y) << "  " << visualTile(player_x - 1, player_y) << "  " << visualTile(player_x, player_y) << "  " << visualTile(player_x + 1, player_y) << "  " << visualTile(player_x + 2, player_y) << "     Health: " << player_health << " " << "Money: " << player_money
+    << "\n" << visualTile(player_x - 2, player_y + 1) << "  " << visualTile(player_x - 1, player_y + 1) << "  " << visualTile(player_x, player_y + 1) << "  " << visualTile(player_x + 1, player_y + 1) << "  " << visualTile(player_x + 2, player_y + 1)
+    << visualTile(player_x - 2, player_y + 2) << "  " << visualTile(player_x - 1, player_y + 2) << "  " << visualTile(player_x, player_y + 2) << "  " << visualTile(player_x + 1, player_y + 2) << "  " << visualTile(player_x + 2, player_y + 2);
 };
 
 char maze::visualTile(int x, int y) {
@@ -106,15 +102,11 @@ vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int
 }
 
 vector<int> maze::targetFollow(int target_x = 0, int target_y = 0, int caller_x = 0, int caller_y = 0, int range = 0, char target = 'd') {
-    int distance = 0;
     int direction = 0;
     int withinRange = 0;
+    int delta_x = 0;
+    int delta_y = 0;
     vector<int> availableDirections;
-
-    if (target == 'p') {
-        target_x = player_x;
-        target_y = player_y;
-    }
 
     if (abs(target_y - caller_y) < range && abs(target_x - caller_x) < range) {
         withinRange = 1;
@@ -147,19 +139,54 @@ vector<int> maze::targetFollow(int target_x = 0, int target_y = 0, int caller_x 
 
         if (target_y < caller_y) {
             if (generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
-                availableDirections.push_back(4);
-            }
-            if (generated_maze.at(caller_x).at(caller_y - 1).base == 0 &&
-                generated_maze.at(caller_x).at(caller_y).base == 0) {
-                availableDirections.push_back(3);
-                }
-            if (generated_maze.at(caller_x).at(caller_y - 1).base == 0 &&
-                generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
                 availableDirections.push_back(1);
+            }
+            if (generated_maze.at(caller_x - 1).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x - 1).at(caller_y).base == 0) {
+                availableDirections.push_back(4);
+                }
+            if (generated_maze.at(caller_x + 1).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x + 1).at(caller_y).base == 0) {
+                availableDirections.push_back(2);
                 }
         }
+
+        if (target_y > caller_y) {
+            if (generated_maze.at(caller_x).at(caller_y + 1).base == 0) {
+                availableDirections.push_back(3);
+            }
+            if (generated_maze.at(caller_x - 1).at(caller_y + 1).base == 0 &&
+                generated_maze.at(caller_x - 1).at(caller_y).base == 0) {
+                availableDirections.push_back(4);
+                }
+            if (generated_maze.at(caller_x + 1).at(caller_y + 1).base == 0 &&
+                generated_maze.at(caller_x + 1).at(caller_y).base == 0) {
+                availableDirections.push_back(2);
+                }
+        }
+        uniform_int_distribution<> directions(0, size(availableDirections));
+        int listPos = directions(gen);
+        direction = availableDirections.at(listPos);
     }
 
+    if (direction == 0) {
+        delta_x = 0;
+        delta_y = 0;
+    } else if (direction == 1) {
+        delta_x = 0;
+        delta_y = -1;
+    } else if (direction == 2) {
+        delta_x = 1;
+        delta_y = 0;
+    } else if (direction == 3) {
+        delta_x = 0;
+        delta_y = 1;
+    } else if (direction == 4) {
+        delta_x = -1;
+        delta_y = 0;
+    }
+
+    return {withinRange, delta_x, delta_y};
 }
 
 void maze::action(string command)
@@ -277,10 +304,10 @@ void maze::updateSkeletons() {
                 } else {
                     vector<vector<int>> available;
                     //iterate through actions list twice
-                    vector<int> playerData = cardinalAdjacent(player_x, player_y, current.x, current.y, 2);
-                    int distance = playerData[0];
-                    int direction = playerData[1];
-                    int withinRange = playerData[2];
+                    vector<int> targetData = cardinalAdjacent(player_x, player_y, current.x, current.y, 2);
+                    int distance = targetData[0];
+                    int direction = targetData[1];
+                    int withinRange = targetData[2];
                     if (withinRange == 1) {
                         generated_maze.at(current.x).at(current.y).skeleton = false;
                         if (direction == 1) skeletonList[i].y -= 1;
@@ -289,33 +316,39 @@ void maze::updateSkeletons() {
                         if (direction == 4) skeletonList[i].x -= 1;
                         generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
                     } else {
+                        targetData = targetFollow(player_x, player_y, current.x, current.y, 2);
+                        if (targetData.at(0) == 1) {
+                            generated_maze.at(current.x).at(current.y).skeleton = false;
+                            skeletonList[i].x += targetData.at(1);
+                            skeletonList[i].y += targetData.at(2);
+                            generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
+                        } else {
+                            if (generated_maze.at(current.x).at(current.y - 1).base == 0)
+                            {
+                                available.push_back({current.x, current.y - 1});
+                            }
+                            if (generated_maze.at(current.x + 1).at(current.y).base == 0)
+                            {
+                                available.push_back({current.x + 1, current.y});
+                            }
+                            if (generated_maze.at(current.x).at(current.y + 1).base == 0)
+                            {
+                                available.push_back({current.x, current.y + 1});
+                            }
+                            if (generated_maze.at(current.x - 1).at(current.y).base == 0) {
+                                available.push_back({current.x - 1, current.y});
+                            }
 
-                        if (generated_maze.at(current.x).at(current.y - 1).base == 0)
-                        {
-                            available.push_back({current.x, current.y - 1});
-                        }
-                        if (generated_maze.at(current.x + 1).at(current.y).base == 0)
-                        {
-                            available.push_back({current.x + 1, current.y});
-                        }
-                        if (generated_maze.at(current.x).at(current.y + 1).base == 0)
-                        {
-                            available.push_back({current.x, current.y + 1});
-                        }
-                        if (generated_maze.at(current.x - 1).at(current.y).base == 0) {
-                            available.push_back({current.x - 1, current.y});
-                        }
+                            uniform_int_distribution<> distAvailable(0, size(available) - 1);
+                            int option = 0;
+                            option = distAvailable(gen);
+                            generated_maze.at(current.x).at(current.y).skeleton = false;
 
-                        uniform_int_distribution<> distAvailable(0, size(available) - 1);
-                        int option = 0;
-                        option = distAvailable(gen);
-                        generated_maze.at(current.x).at(current.y).skeleton = false;
-
-                        //need to modify the actual struct, not just a variable that is based on it
-                        skeletonList[i].x = available.at(option).at(0);
-                        skeletonList[i].y = available.at(option).at(1);
-                        generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
-
+                            //need to modify the actual struct, not just a variable that is based on it
+                            skeletonList[i].x = available.at(option).at(0);
+                            skeletonList[i].y = available.at(option).at(1);
+                            generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
+                        }
                     }
                 }
         }
