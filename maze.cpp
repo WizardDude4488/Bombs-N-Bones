@@ -48,7 +48,7 @@ char maze::visualTile(int x, int y) {
     return value;
 }
 int maze::bombCheck(int caller_x, int caller_y) {
-    uniform_int_distribution<> bombDamage(1, 5);
+    uniform_int_distribution<> bombDamage(2, 5);
     int damage = 0;
     if (generated_maze.at(caller_x).at(caller_y).bomb) {
         damage = bombDamage(gen);
@@ -80,7 +80,7 @@ vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int
             if (target_y < caller_y) direction = 1;
         }
 
-        if (abs(target_y - caller_y) != 0 && abs(target_y - caller_y != 0)) {
+        if (abs(target_y - caller_y) != 0 && abs(target_y - caller_y) != 0) {
             distance = floor(sqrt(pow((target_x - caller_x),2) + pow((target_y - caller_y),2)));
         }
 
@@ -393,7 +393,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     vector<int> failed;
 
     //-1 since the last remaining zero tile should be the entrance to the maze
-    while (generated < floor(0.5 * number_of_tiles))
+    while (generated < floor(0.4 * number_of_tiles))
     {
         //pick an adjacent tile that hasn't been visited
         //if there isn't an unvisited tile adjacent, move backwards through stack by 1 entry
@@ -524,7 +524,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
             }
         }
     }
-    //cout << "\nDebug: Walkable calculation succeeded." << "\n";
+    cout << " ";
 
     //generate x and y for the exit
     uniform_int_distribution<> exitDistWalkable(1, size(walkable));
@@ -571,7 +571,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     }
 
     //generate bomb locations
-    for (int positions = 0; positions < 0.15 * size(walkable); positions++) {
+    for (int positions = 0; positions < 0.08 * size(walkable); positions++) {
         uniform_int_distribution<> bombDistWalkable(1, size(walkable));
         int listPos = bombDistWalkable(gen);
         int bombX = walkable.at(listPos).at(0);
