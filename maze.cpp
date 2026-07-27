@@ -164,7 +164,7 @@ vector<int> maze::targetFollow(int target_x = 0, int target_y = 0, int caller_x 
                 availableDirections.push_back(2);
                 }
         }
-        uniform_int_distribution<> directions(0, size(availableDirections));
+        uniform_int_distribution<> directions(0, size(availableDirections) - 1);
         int listPos = directions(gen);
         direction = availableDirections.at(listPos);
     }
@@ -294,10 +294,11 @@ void maze::updateSkeletons() {
             if (skeletonList[i].health == 0) {
                 std::erase(skeletonList, current);
                 generated_maze.at(current.x).at(current.y).skeleton = false;
-                cout << "\n" << "skeleton killed";
+                cout << "\n" << "skeleton killed";a
+
             } else if (cardinalAdjacent(player_x, player_y, current.x, current.y, 1).at(2) == 1) {
                 player_health -= 1;
-                current.health -= bombCheck(current.x, current.y);
+                skeletonList[i].health -= bombCheck(current.x, current.y);
             } else {
                 vector<vector<int>> available;
                 //iterate through actions list twice
@@ -485,7 +486,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
 
         for (int x = 0; x < mazeSizeExt; x++)
         {
-            generated += count(tile_maze[x].begin(), tile_maze[x].end(), 0);
+            generated += count(tile_maze.at(x).begin(), tile_maze.at(x).end(), 0);
         }
 
         //clear available vector before use in next iteration
@@ -527,7 +528,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     cout << " ";
 
     //generate x and y for the exit
-    uniform_int_distribution<> exitDistWalkable(1, size(walkable));
+    uniform_int_distribution<> exitDistWalkable(0, size(walkable) - 1);
     int exit = exitDistWalkable(gen);
 
     int exitX = walkable.at(exit).at(0);
@@ -538,7 +539,8 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     walkable.erase(walkable.begin() + exit);
 
     //generated x and y for the entrance
-    uniform_int_distribution<> entranceDistWalkable(1, size(walkable));
+    //make sure to use (0, size - 1) since the first index is zero and the last index is size - 1
+    uniform_int_distribution<> entranceDistWalkable(0, size(walkable) - 1);
     int entrance = entranceDistWalkable(gen);
 
     int entranceX = walkable.at(entrance).at(0);
@@ -548,7 +550,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
 
     //generate money locations
     for (int positions = 0; positions < 0.15 * size(walkable); positions++) {
-        uniform_int_distribution<> moneyDistWalkable(1, size(walkable));
+        uniform_int_distribution<> moneyDistWalkable(0, size(walkable) - 1);
         int listPos = moneyDistWalkable(gen);
         int moneyX = walkable.at(listPos).at(0);
         int moneyY = walkable.at(listPos).at(1);
@@ -558,7 +560,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
 
     //generate initial skeleton locations
     for (int positions = 0; positions < 0.06 * size(walkable); positions++) {
-        uniform_int_distribution<> moneyDistWalkable(1, size(walkable));
+        uniform_int_distribution<> moneyDistWalkable(0, size(walkable) - 1);
         int listPos = moneyDistWalkable(gen);
         skeleton current;
         current.x = walkable.at(listPos).at(0);
@@ -572,7 +574,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
 
     //generate bomb locations
     for (int positions = 0; positions < 0.08 * size(walkable); positions++) {
-        uniform_int_distribution<> bombDistWalkable(1, size(walkable));
+        uniform_int_distribution<> bombDistWalkable(0, size(walkable) - 1);
         int listPos = bombDistWalkable(gen);
         int bombX = walkable.at(listPos).at(0);
         int bombY = walkable.at(listPos).at(1);
