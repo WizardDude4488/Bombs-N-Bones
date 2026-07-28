@@ -25,9 +25,9 @@ public:
 
     int player_x = 1;
     int player_y = 1;
-    int player_health = 20;
+    int player_health = 10;
     int player_money = 0;
-    const int player_health_max = 20;
+    const int player_health_max = 10;
 
     struct skeleton {
         int x = 0;
