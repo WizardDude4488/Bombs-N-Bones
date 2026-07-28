@@ -279,7 +279,8 @@ void maze::action(string command)
             cout << "\n" << "Invalid action." << "\n";
         }
 
-        if (player_health == 0) {
+        //need to use less than or equal to because some effects cause negative health, thus preventing the condition from ever being reached
+        if (player_health <= 0) {
             playerDead = true;
             cout << "\n\n\n\n\n\n\n\nYou died! You had " << player_money << "money upon death. Better luck next time!";
         }
@@ -294,8 +295,8 @@ void maze::updateSkeletons() {
 
         //two available actions in string
         for (int j = 0; j < 1; j++) {
-            //remove from list if health == 0
-            if (skeletonList[i].health == 0) {
+            //remove from list if health <= 0
+            if (skeletonList[i].health <= 0) {
                 std::erase(skeletonList, current);
                 generated_maze.at(current.x).at(current.y).skeleton = false;
                 cout << "\n" << "skeleton killed";
