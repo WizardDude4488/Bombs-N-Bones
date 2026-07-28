@@ -19,7 +19,7 @@ void maze::newHud()
     //hud (3*3 grid, instructions for actions, place to enter letter for action)
     //printf(hud);
     //update positions and quantities
-    cout << "\n" << visualTile(player_x - 2, player_y - 2) << "  " << visualTile(player_x - 1, player_y - 2) << "  " << visualTile(player_x, player_y - 2) << "  " << visualTile(player_x + 1, player_y - 2) << "  " << visualTile (player_x + 2, player_y - 2) << "     Enter one command at a time. Or, you can string together up to three commands using a single string,"
+    cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" << visualTile(player_x - 2, player_y - 2) << "  " << visualTile(player_x - 1, player_y - 2) << "  " << visualTile(player_x, player_y - 2) << "  " << visualTile(player_x + 1, player_y - 2) << "  " << visualTile (player_x + 2, player_y - 2) << "     Enter one command at a time. Or, you can string together up to three commands using a single string,"
     << "\n" << visualTile(player_x - 2, player_y - 1) << "  " << visualTile(player_x - 1, player_y - 1) << "  " << visualTile(player_x, player_y - 1) << "  " << visualTile(player_x + 1, player_y - 1) << "  " << visualTile(player_x + 2, player_y - 1) << "     such as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack."
     << "\n" << visualTile(player_x - 2, player_y) << "  " << visualTile(player_x - 1, player_y) << "  " << visualTile(player_x, player_y) << "  " << visualTile(player_x + 1, player_y) << "  " << visualTile(player_x + 2, player_y) << "     Health: " << player_health << " " << "Money: " << player_money
     << "\n" << visualTile(player_x - 2, player_y + 1) << "  " << visualTile(player_x - 1, player_y + 1) << "  " << visualTile(player_x, player_y + 1) << "  " << visualTile(player_x + 1, player_y + 1) << "  " << visualTile(player_x + 2, player_y + 1) << "     Recent message: " << message
@@ -209,30 +209,37 @@ void maze::action(string command)
             } if (generated_maze.at(player_x).at(player_y).exit) {
                 exitFound = true;
                 cout << "\n\n\n\n\n\n\nYou escaped! You left with" << " " << player_money << " " << "money. Thanks for playing!";
+            } if (generated_maze.at(player_x).at(player_y).health) {
+                generated_maze.at(player_x).at(player_y).health = false;
+                if (player_health_max - player_health >= 5) {
+                    player_health += 5;
+                } else {
+                    player_health = player_health_max;
+                }
             }
         } else if (command[i] == 'a') {
             if (generated_maze.at(player_x - 1).at(player_y).base != 1) {
                 player_x -= 1;
             } else {
-                cout << "\n" << "You can't move there! Try doing something else." << "\n";
+                message = "You can't move there! Try doing something else.";
             }
         } else if (command[i] == 'w') {
             if (generated_maze.at(player_x).at(player_y - 1).base != 1) {
                 player_y -= 1;
             } else {
-                cout << "\n" << "You can't move there! Try doing something else." << "\n";
+                message = "You can't move there! Try doing something else.";
             }
         } else if (command[i] == 'd') {
             if (generated_maze.at(player_x + 1).at(player_y).base != 1) {
                 player_x += 1;
             } else {
-                cout << "\n" << "You can't move there! Try doing something else." << "\n";
+                message = "You can't move there! Try doing something else.";
             }
         } else if (command[i] == 's') {
             if (generated_maze.at(player_x).at(player_y + 1).base != 1) {
                 player_y += 1;
             } else {
-                cout << "\n" << "You can't move there! Try doing something else." << "\n";
+                message = "You can't move there! Try doing something else.";
             }
         } else if (command[i] == 'q') {
             if (generated_maze.at(player_x).at(player_y + 1).skeleton) {
@@ -296,11 +303,19 @@ void maze::updateSkeletons() {
         skeleton current = skeletonList[i];
 
         //two available actions in string
-        for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 1; j++) {
             //remove from list if health <= 0
             if (skeletonList[i].health <= 0) {
                 std::erase(skeletonList, current);
                 generated_maze.at(current.x).at(current.y).skeleton = false;
+                uniform_int_distribution<> dropChance(1, 3);
+                switch (dropChance(gen)) {
+                    case 1:
+                        generated_maze.at(current.x).at(current.y).money = true;
+                    case 2:
+                        generated_maze.at(current.x).at(current.y).health = true;
+                }
+
                 message = "skeleton killed!";
 
             } else if (cardinalAdjacent(player_x, player_y, current.x, current.y, 1).at(2) == 1) {
