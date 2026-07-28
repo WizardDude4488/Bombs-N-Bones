@@ -17,6 +17,7 @@ public:
         bool money = false;
         bool exit = false;
         bool bomb = false;
+        bool health = false;
     };
 
     vector<vector<tile>> generated_maze;
@@ -47,6 +48,8 @@ public:
     bool playerDead = false;
 
     vector<skeleton> skeletonList;
+
+    string message = "Nothing";
 
     //methods declared after structs are created
     maze();

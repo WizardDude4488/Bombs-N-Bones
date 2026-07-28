@@ -22,7 +22,7 @@ void maze::newHud()
     cout << "\n" << visualTile(player_x - 2, player_y - 2) << "  " << visualTile(player_x - 1, player_y - 2) << "  " << visualTile(player_x, player_y - 2) << "  " << visualTile(player_x + 1, player_y - 2) << "  " << visualTile (player_x + 2, player_y - 2) << "     Enter one command at a time. Or, you can string together up to three commands using a single string,"
     << "\n" << visualTile(player_x - 2, player_y - 1) << "  " << visualTile(player_x - 1, player_y - 1) << "  " << visualTile(player_x, player_y - 1) << "  " << visualTile(player_x + 1, player_y - 1) << "  " << visualTile(player_x + 2, player_y - 1) << "     such as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack."
     << "\n" << visualTile(player_x - 2, player_y) << "  " << visualTile(player_x - 1, player_y) << "  " << visualTile(player_x, player_y) << "  " << visualTile(player_x + 1, player_y) << "  " << visualTile(player_x + 2, player_y) << "     Health: " << player_health << " " << "Money: " << player_money
-    << "\n" << visualTile(player_x - 2, player_y + 1) << "  " << visualTile(player_x - 1, player_y + 1) << "  " << visualTile(player_x, player_y + 1) << "  " << visualTile(player_x + 1, player_y + 1) << "  " << visualTile(player_x + 2, player_y + 1)
+    << "\n" << visualTile(player_x - 2, player_y + 1) << "  " << visualTile(player_x - 1, player_y + 1) << "  " << visualTile(player_x, player_y + 1) << "  " << visualTile(player_x + 1, player_y + 1) << "  " << visualTile(player_x + 2, player_y + 1) << "     Recent message: " << message
     << "\n" << visualTile(player_x - 2, player_y + 2) << "  " << visualTile(player_x - 1, player_y + 2) << "  " << visualTile(player_x, player_y + 2) << "  " << visualTile(player_x + 1, player_y + 2) << "  " << visualTile(player_x + 2, player_y + 2);
 };
 
@@ -40,6 +40,8 @@ char maze::visualTile(int x, int y) {
             value = 'm';
         } else if (currentTile.bomb) {
             value = 'b';
+        } else if (currentTile.health) {
+            value = 'h';
         } else {
             value = '0';
         }
@@ -239,7 +241,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
-                cout << "\n" << "skeleton hurt";
+                message = "skeleton hurt";
             }
             if (generated_maze.at(player_x).at(player_y).skeleton) {
                 skeleton current;
@@ -247,7 +249,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
-                cout << "\n" << "skeleton hurt";
+                message = "skeleton hurt";
             }
             if (generated_maze.at(player_x).at(player_y - 1).skeleton) {
                 skeleton current;
@@ -255,7 +257,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
-                cout << "\n" << "skeleton hurt";
+                message = "skeleton hurt";
             }
             if (generated_maze.at(player_x - 1).at(player_y).skeleton) {
                 skeleton current;
@@ -263,7 +265,7 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
-                cout << "\n" << "skeleton hurt";
+                message = "skeleton hurt";
             }
             if (generated_maze.at(player_x + 1).at(player_y).skeleton) {
                 skeleton current;
@@ -271,12 +273,12 @@ void maze::action(string command)
                 auto it = std::ranges::find(skeletonList, current);
                 int index = distance(skeletonList.begin(), it);
                 skeletonList[index].health -= 1;
-                cout << "\n" << "skeleton hurt";
+                message = "skeleton hurt";
             }
             player_health -= bombCheck(player_x, player_y);
         }
         else {
-            cout << "\n" << "Invalid action." << "\n";
+            message = "Invalid Action!";
         }
 
         //need to use less than or equal to because some effects cause negative health, thus preventing the condition from ever being reached
@@ -294,12 +296,12 @@ void maze::updateSkeletons() {
         skeleton current = skeletonList[i];
 
         //two available actions in string
-        for (int j = 0; j < 1; j++) {
+        for (int j = 0; j < 2; j++) {
             //remove from list if health <= 0
             if (skeletonList[i].health <= 0) {
                 std::erase(skeletonList, current);
                 generated_maze.at(current.x).at(current.y).skeleton = false;
-                cout << "\n" << "skeleton killed";
+                message = "skeleton killed!";
 
             } else if (cardinalAdjacent(player_x, player_y, current.x, current.y, 1).at(2) == 1) {
                 player_health -= 1;
@@ -613,6 +615,8 @@ void maze::printMaze() {
                 cout << "e" << "  ";
             } else if (value == 'b') {
                 cout << "b" << "  ";
+            } else if (value == 'h') {
+                cout << "h" << "  ";
             } else {
                 cout << "!" << "  ";
             }

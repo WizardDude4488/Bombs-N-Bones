@@ -13,6 +13,7 @@ using namespace std;
 bool playing = true;
 bool menu = true;
 bool leaveMaze = false;
+bool debug = false;
 string start;
 int mazeSize;
 
@@ -22,10 +23,11 @@ int main() {
     //menu to start game
     while (menu)
     {
-        cout << "Welcome to Bombs N' Bones!\nThis is a simple text-based dungeon crawler\nWould you like to play?\n(y/n)"; cin >> start;
-        if (start[0] == 'y') {
+        cout << "Welcome to Bombs N' Bones!\nThis is a simple text-based dungeon crawler\nWould you like to play? (enter 'd' for debug mode)\n(y/n)"; cin >> start;
+        if (start[0] == 'y' || start[0] == 'd') {
             cout << "Enter an integer greater than 8 to select the maze size: "; cin >> mazeSize;
             menu = false;
+            if (start[0] == 'd') debug = true;
         }
         if (start[0] == 'n') {
             printf("quit"); menu = false; playing = false;
@@ -41,7 +43,7 @@ int main() {
         //hud (3*3 grid, instructions for actions, place to enter letter for action)
         //printf(hud);
         //update positions and quantities
-        Maze.printMaze();
+        if (debug) Maze.printMaze();
         Maze.newHud();
         string command;
         cout << "\n";
