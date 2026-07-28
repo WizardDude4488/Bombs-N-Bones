@@ -80,8 +80,12 @@ vector<int> maze::cardinalAdjacent(int target_x, int target_y, int caller_x, int
             if (target_y < caller_y) direction = 1;
         }
 
-        if (abs(target_y - caller_y) != 0 && abs(target_y - caller_y) != 0) {
+        if (abs(target_y - caller_y) != 0 && abs(target_x - caller_x) != 0) {
             distance = floor(sqrt(pow((target_x - caller_x),2) + pow((target_y - caller_y),2)));
+        }
+
+        if (abs(target_y - caller_y) == 0 && abs(target_x - caller_x) == 0) {
+            distance = 0;
         }
 
         } else {
@@ -294,7 +298,7 @@ void maze::updateSkeletons() {
             if (skeletonList[i].health == 0) {
                 std::erase(skeletonList, current);
                 generated_maze.at(current.x).at(current.y).skeleton = false;
-                cout << "\n" << "skeleton killed";a
+                cout << "\n" << "skeleton killed";
 
             } else if (cardinalAdjacent(player_x, player_y, current.x, current.y, 1).at(2) == 1) {
                 player_health -= 1;
