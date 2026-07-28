@@ -19,18 +19,18 @@ void maze::newHud()
     //hud (3*3 grid, instructions for actions, place to enter letter for action)
     //printf(hud);
     //update positions and quantities
-    cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" << visualTile(player_x - 2, player_y - 2) << "  " << visualTile(player_x - 1, player_y - 2) << "  " << visualTile(player_x, player_y - 2) << "  " << visualTile(player_x + 1, player_y - 2) << "  " << visualTile (player_x + 2, player_y - 2) << "     Enter one command at a time. Or, you can string together up to three commands using a single string,"
-    << "\n" << visualTile(player_x - 2, player_y - 1) << "  " << visualTile(player_x - 1, player_y - 1) << "  " << visualTile(player_x, player_y - 1) << "  " << visualTile(player_x + 1, player_y - 1) << "  " << visualTile(player_x + 2, player_y - 1) << "     such as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack."
-    << "\n" << visualTile(player_x - 2, player_y) << "  " << visualTile(player_x - 1, player_y) << "  " << visualTile(player_x, player_y) << "  " << visualTile(player_x + 1, player_y) << "  " << visualTile(player_x + 2, player_y) << "     Health: " << player_health << " " << "Money: " << player_money
-    << "\n" << visualTile(player_x - 2, player_y + 1) << "  " << visualTile(player_x - 1, player_y + 1) << "  " << visualTile(player_x, player_y + 1) << "  " << visualTile(player_x + 1, player_y + 1) << "  " << visualTile(player_x + 2, player_y + 1) << "     Recent message: " << message
-    << "\n" << visualTile(player_x - 2, player_y + 2) << "  " << visualTile(player_x - 1, player_y + 2) << "  " << visualTile(player_x, player_y + 2) << "  " << visualTile(player_x + 1, player_y + 2) << "  " << visualTile(player_x + 2, player_y + 2);
+    cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" << visualTile(player_x - 2, player_y - 2) << " " << visualTile(player_x - 1, player_y - 2) << " " << visualTile(player_x, player_y - 2) << " " << visualTile(player_x + 1, player_y - 2) << " " << visualTile (player_x + 2, player_y - 2) << "     Enter one command at a time. Or, you can string together up to three commands using a single string,"
+    << "\n" << visualTile(player_x - 2, player_y - 1) << " " << visualTile(player_x - 1, player_y - 1) << " " << visualTile(player_x, player_y - 1) << " " << visualTile(player_x + 1, player_y - 1) << " " << visualTile(player_x + 2, player_y - 1) << "     such as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack."
+    << "\n" << visualTile(player_x - 2, player_y) << " " << visualTile(player_x - 1, player_y) << " " << visualTile(player_x, player_y) << " " << visualTile(player_x + 1, player_y) << " " << visualTile(player_x + 2, player_y) << "     Health: " << player_health << " " << "Money: " << player_money
+    << "\n" << visualTile(player_x - 2, player_y + 1) << " " << visualTile(player_x - 1, player_y + 1) << " " << visualTile(player_x, player_y + 1) << " " << visualTile(player_x + 1, player_y + 1) << " " << visualTile(player_x + 2, player_y + 1) << "     Recent message: " << message
+    << "\n" << visualTile(player_x - 2, player_y + 2) << " " << visualTile(player_x - 1, player_y + 2) << " " << visualTile(player_x, player_y + 2) << " " << visualTile(player_x + 1, player_y + 2) << " " << visualTile(player_x + 2, player_y + 2);
 };
 
 char maze::visualTile(int x, int y) {
     tile currentTile = generated_maze.at(x).at(y);
     char value = '0';
     if (currentTile.base == 1) {
-        value = '1';
+        value = '#';
     } else if (currentTile.base == 0) {
         if (currentTile.skeleton) {
             value = 's';
@@ -618,22 +618,22 @@ void maze::printMaze() {
             char value = '0';
             value = visualTile(x, y);
 
-            if (value == '0') {
-                cout << "0" << "  ";
+            if (value == '#') {
+                cout << "#" << " ";
             } else if (value == '1') {
-                cout << "1" << "  ";
+                cout << "1" << " ";
             } else if (value == 's') {
-                cout << "s" << "  ";
+                cout << "s" << " ";
             } else if (value == 'm') {
-                cout << "m" << "  ";
+                cout << "m" << " ";
             } else if (value == 'e') {
-                cout << "e" << "  ";
+                cout << "e" << " ";
             } else if (value == 'b') {
-                cout << "b" << "  ";
+                cout << "b" << " ";
             } else if (value == 'h') {
-                cout << "h" << "  ";
+                cout << "h" << " ";
             } else {
-                cout << "!" << "  ";
+                cout << "!" << " ";
             }
         }
         cout << "\n";

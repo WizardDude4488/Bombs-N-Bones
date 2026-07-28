@@ -23,7 +23,14 @@ int main() {
     //menu to start game
     while (menu)
     {
-        cout << "Welcome to Bombs N' Bones!\nThis is a simple text-based dungeon crawler, with paths (0) and walls (1).\nThe objective of the game is to reach the exit (e) with as much money (m) as possible.\nMoney is placed throughout the map, and skeletons (s) have a chance to drop money or health pickups (h).\nAttacking while standing on a bomb (b) will do a random amount of damage to the player.\nSkeletons are guaranteed to die if they attack standing on a bomb.\nWould you like to play? (enter 'd' for debug mode)\n(y/n)."; cin >> start;
+        cout << "Welcome to Bombs N' Bones!\n"
+                "This is a simple text-based dungeon crawler, with paths (0) and walls (#).\n"
+                "The objective of the game is to reach the exit (e) with as much money (m) as possible.\n"
+                "Money is placed throughout the map, and skeletons (s) have a chance to drop money or health pickups (h).\n"
+                "Attacking while standing on a bomb (b) will do a random amount of damage to the player.\n"
+                "Skeletons are guaranteed to die if they attack standing on a bomb.\n"
+                "Would you like to play? (enter 'd' for debug mode)\n"
+                "(y/n)."; cin >> start;
         if (start[0] == 'y' || start[0] == 'd') {
             cout << "Enter an integer greater than 8 to select the maze size (larger maps will take longer to generate): "; cin >> mazeSize;
             menu = false;
