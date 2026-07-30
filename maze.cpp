@@ -358,16 +358,17 @@ void maze::updateSkeletons() {
                         if (generated_maze.at(current.x - 1).at(current.y).base == 0) {
                             available.push_back({current.x - 1, current.y});
                         }
+                        if (size(available) != 0) {
+                            uniform_int_distribution<> distAvailable(0, size(available) - 1);
+                            int option = 0;
+                            option = distAvailable(gen);
+                            generated_maze.at(current.x).at(current.y).skeleton = false;
 
-                        uniform_int_distribution<> distAvailable(0, size(available) - 1);
-                        int option = 0;
-                        option = distAvailable(gen);
-                        generated_maze.at(current.x).at(current.y).skeleton = false;
-
-                        //need to modify the actual struct, not just a variable that is based on it
-                        skeletonList[i].x = available.at(option).at(0);
-                        skeletonList[i].y = available.at(option).at(1);
-                        generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
+                            //need to modify the actual struct, not just a variable that is based on it
+                            skeletonList[i].x = available.at(option).at(0);
+                            skeletonList[i].y = available.at(option).at(1);
+                            generated_maze.at(skeletonList[i].x).at(skeletonList[i].y).skeleton = true;
+                        }
                     }
                 }
             }
