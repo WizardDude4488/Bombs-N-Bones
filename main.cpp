@@ -29,6 +29,8 @@ int main() {
                 "Money is placed throughout the map, and skeletons (s) have a chance to drop money or health pickups (h).\n"
                 "Attacking while standing on a bomb (b) will do a random amount of damage to the player.\n"
                 "Skeletons are guaranteed to die if they attack standing on a bomb.\n"
+                "But there's also a small chance that they trip on one and blow themselves up (those bones need some WD-40!).\n"
+                "At all times, the player is located at the center of the crosshair.\n"
                 "Would you like to play? (enter 'd' for debug mode)\n"
                 "(y/n)."; cin >> start;
         if (start[0] == 'y' || start[0] == 'd') {

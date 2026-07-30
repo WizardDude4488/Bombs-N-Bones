@@ -51,6 +51,7 @@ public:
     vector<skeleton> skeletonList;
 
     string message = "Nothing";
+    string hudSpace = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 
     //methods declared after structs are created
     maze();

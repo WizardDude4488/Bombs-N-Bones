@@ -19,11 +19,14 @@ void maze::newHud()
     //hud (3*3 grid, instructions for actions, place to enter letter for action)
     //printf(hud);
     //update positions and quantities
-    cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" << visualTile(player_x - 2, player_y - 2) << " " << visualTile(player_x - 1, player_y - 2) << " " << visualTile(player_x, player_y - 2) << " " << visualTile(player_x + 1, player_y - 2) << " " << visualTile (player_x + 2, player_y - 2) << "     Enter one command at a time. Or, you can string together up to three commands using a single string,"
-    << "\n" << visualTile(player_x - 2, player_y - 1) << " " << visualTile(player_x - 1, player_y - 1) << " " << visualTile(player_x, player_y - 1) << " " << visualTile(player_x + 1, player_y - 1) << " " << visualTile(player_x + 2, player_y - 1) << "     such as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack."
-    << "\n" << visualTile(player_x - 2, player_y) << " " << visualTile(player_x - 1, player_y) << " " << visualTile(player_x, player_y) << " " << visualTile(player_x + 1, player_y) << " " << visualTile(player_x + 2, player_y) << "     Health: " << player_health << " " << "Money: " << player_money
-    << "\n" << visualTile(player_x - 2, player_y + 1) << " " << visualTile(player_x - 1, player_y + 1) << " " << visualTile(player_x, player_y + 1) << " " << visualTile(player_x + 1, player_y + 1) << " " << visualTile(player_x + 2, player_y + 1) << "     Recent message: " << message
-    << "\n" << visualTile(player_x - 2, player_y + 2) << " " << visualTile(player_x - 1, player_y + 2) << " " << visualTile(player_x, player_y + 2) << " " << visualTile(player_x + 1, player_y + 2) << " " << visualTile(player_x + 2, player_y + 2);
+    cout << hudSpace
+    << "  " << "    v"
+    << "\n  " << visualTile(player_x - 2, player_y - 2) << " " << visualTile(player_x - 1, player_y - 2) << " " << visualTile(player_x, player_y - 2) << " " << visualTile(player_x + 1, player_y - 2) << " " << visualTile (player_x + 2, player_y - 2) << "     Enter one command at a time. Or, you can string together up to three commands using a single string,"
+    << "\n  " << visualTile(player_x - 2, player_y - 1) << " " << visualTile(player_x - 1, player_y - 1) << " " << visualTile(player_x, player_y - 1) << " " << visualTile(player_x + 1, player_y - 1) << " " << visualTile(player_x + 2, player_y - 1) << "     such as 'aeq.' Use wasd to move, e to pickup or interact, and q to attack."
+    << "\n> " << visualTile(player_x - 2, player_y) << " " << visualTile(player_x - 1, player_y) << " " << visualTile(player_x, player_y) << " " << visualTile(player_x + 1, player_y) << " " << visualTile(player_x + 2, player_y) << " <    Health: " << player_health << " " << "Money: " << player_money
+    << "\n  " << visualTile(player_x - 2, player_y + 1) << " " << visualTile(player_x - 1, player_y + 1) << " " << visualTile(player_x, player_y + 1) << " " << visualTile(player_x + 1, player_y + 1) << " " << visualTile(player_x + 2, player_y + 1) << "     Recent message: " << message
+    << "\n  " << visualTile(player_x - 2, player_y + 2) << " " << visualTile(player_x - 1, player_y + 2) << " " << visualTile(player_x, player_y + 2) << " " << visualTile(player_x + 1, player_y + 2) << " " << visualTile(player_x + 2, player_y + 2)
+    << "\n  " << "    ^";
 };
 
 char maze::visualTile(int x, int y) {
@@ -117,56 +120,76 @@ vector<int> maze::targetFollow(int target_x = 0, int target_y = 0, int caller_x 
     if (abs(target_y - caller_y) < range && abs(target_x - caller_x) < range) {
         withinRange = 1;
         if (target_x > caller_x) {
-            if (generated_maze.at(caller_x + 1).at(caller_y).base == 0) {
+            if (generated_maze.at(caller_x + 1).at(caller_y).base == 0 &&
+                generated_maze.at(caller_x + 1).at(caller_y).skeleton == false) {
                 availableDirections.push_back(2);
             }
             if (generated_maze.at(caller_x + 1).at(caller_y + 1).base == 0 &&
-                generated_maze.at(caller_x).at(caller_y + 1).base == 0) {
+                generated_maze.at(caller_x).at(caller_y + 1).base == 0 &&
+                generated_maze.at(caller_x + 1).at(caller_y + 1).skeleton == false &&
+                generated_maze.at(caller_x).at(caller_y + 1).skeleton == false) {
                 availableDirections.push_back(3);
             }
             if (generated_maze.at(caller_x + 1).at(caller_y - 1).base == 0 &&
-                generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
+                generated_maze.at(caller_x).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x + 1).at(caller_y - 1).skeleton == false &&
+                generated_maze.at(caller_x).at(caller_y - 1).skeleton == false) {
                 availableDirections.push_back(1);
             }
         }
         if (target_x < caller_x) {
-            if (generated_maze.at(caller_x - 1).at(caller_y).base == 0) {
+            if (generated_maze.at(caller_x - 1).at(caller_y).base == 0 &&
+                generated_maze.at(caller_x - 1).at(caller_y).skeleton == false) {
                 availableDirections.push_back(4);
             }
             if (generated_maze.at(caller_x - 1).at(caller_y + 1).base == 0 &&
-                generated_maze.at(caller_x).at(caller_y + 1).base == 0) {
+                generated_maze.at(caller_x).at(caller_y + 1).base == 0 &&
+                generated_maze.at(caller_x - 1).at(caller_y + 1).skeleton == false &&
+                generated_maze.at(caller_x).at(caller_y + 1).skeleton == false) {
                 availableDirections.push_back(3);
                 }
             if (generated_maze.at(caller_x - 1).at(caller_y - 1).base == 0 &&
-                generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
+                generated_maze.at(caller_x).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x - 1).at(caller_y - 1).skeleton == false &&
+                generated_maze.at(caller_x).at(caller_y - 1).skeleton == false) {
                 availableDirections.push_back(1);
                 }
         }
 
         if (target_y < caller_y) {
-            if (generated_maze.at(caller_x).at(caller_y - 1).base == 0) {
+            if (generated_maze.at(caller_x).at(caller_y - 1).base == 0 &&
+                generated_maze.at(caller_x).at(caller_y - 1).skeleton == false) {
                 availableDirections.push_back(1);
             }
             if (generated_maze.at(caller_x - 1).at(caller_y - 1).base == 0 &&
-                generated_maze.at(caller_x - 1).at(caller_y).base == 0) {
+                generated_maze.at(caller_x - 1).at(caller_y).base == 0 &&
+                generated_maze.at(caller_x - 1).at(caller_y - 1).skeleton == false &&
+                generated_maze.at(caller_x - 1).at(caller_y).skeleton == false) {
                 availableDirections.push_back(4);
                 }
             if (generated_maze.at(caller_x + 1).at(caller_y - 1).base == 0 &&
-                generated_maze.at(caller_x + 1).at(caller_y).base == 0) {
+                generated_maze.at(caller_x + 1).at(caller_y).base == 0 &&
+                generated_maze.at(caller_x + 1).at(caller_y - 1).skeleton == false &&
+                generated_maze.at(caller_x + 1).at(caller_y).skeleton == false) {
                 availableDirections.push_back(2);
                 }
         }
 
         if (target_y > caller_y) {
-            if (generated_maze.at(caller_x).at(caller_y + 1).base == 0) {
+            if (generated_maze.at(caller_x).at(caller_y + 1).base == 0 &&
+                generated_maze.at(caller_x).at(caller_y + 1).skeleton == false) {
                 availableDirections.push_back(3);
             }
             if (generated_maze.at(caller_x - 1).at(caller_y + 1).base == 0 &&
-                generated_maze.at(caller_x - 1).at(caller_y).base == 0) {
+                generated_maze.at(caller_x - 1).at(caller_y).base == 0 &&
+                generated_maze.at(caller_x - 1).at(caller_y + 1).skeleton == false &&
+                generated_maze.at(caller_x - 1).at(caller_y).skeleton == false) {
                 availableDirections.push_back(4);
                 }
             if (generated_maze.at(caller_x + 1).at(caller_y + 1).base == 0 &&
-                generated_maze.at(caller_x + 1).at(caller_y).base == 0) {
+                generated_maze.at(caller_x + 1).at(caller_y).base == 0 &&
+                generated_maze.at(caller_x + 1).at(caller_y + 1).skeleton == false &&
+                generated_maze.at(caller_x + 1).at(caller_y).skeleton == false) {
                 availableDirections.push_back(2);
                 }
         }
@@ -305,6 +328,11 @@ void maze::updateSkeletons() {
         //two available actions in string
         for (int j = 0; j < 1; j++) {
             //remove from list if health <= 0
+            uniform_int_distribution<> tripOnBomb(1, 4);
+            if (tripOnBomb(gen) == 1) {
+                skeletonList[i].health -= bombCheck(current.x, current.y);
+            }
+
             if (skeletonList[i].health <= 0) {
                 std::erase(skeletonList, current);
                 generated_maze.at(current.x).at(current.y).skeleton = false;
@@ -314,6 +342,8 @@ void maze::updateSkeletons() {
                         generated_maze.at(current.x).at(current.y).money = true;
                     case 2:
                         generated_maze.at(current.x).at(current.y).health = true;
+                    default:
+
                 }
 
                 message = "skeleton killed!";
@@ -417,7 +447,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     vector<int> failed;
 
     //-1 since the last remaining zero tile should be the entrance to the maze
-    while (generated < floor(0.4 * number_of_tiles))
+    while (generated < floor(0.45 * number_of_tiles))
     {
         //pick an adjacent tile that hasn't been visited
         //if there isn't an unvisited tile adjacent, move backwards through stack by 1 entry
@@ -582,7 +612,7 @@ vector<vector<maze::tile>> maze::generate_maze(int mazeSizeInt) {
     }
 
     //generate initial skeleton locations
-    for (int positions = 0; positions < 0.06 * size(walkable); positions++) {
+    for (int positions = 0; positions < 0.1 * size(walkable); positions++) {
         uniform_int_distribution<> moneyDistWalkable(0, size(walkable) - 1);
         int listPos = moneyDistWalkable(gen);
         skeleton current;
