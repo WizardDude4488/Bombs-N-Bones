@@ -342,8 +342,6 @@ void maze::updateSkeletons() {
                         generated_maze.at(current.x).at(current.y).money = true;
                     case 2:
                         generated_maze.at(current.x).at(current.y).health = true;
-                    default:
-
                 }
 
                 message = "skeleton killed!";
